@@ -80,6 +80,14 @@ The final output of the neural network is given by <img src="https://render.gith
 
 Basics:
 * <img src="https://render.githubusercontent.com/render/math?math=a^{[0]}"> represent the '*activations*' to the input layer of the neural network.  
-* The parameters associated with each layer are <img src="https://render.githubusercontent.com/render/math?math=w^{[1]}"> and <img src="https://render.githubusercontent.com/render/math?math=b^{[l]}"> which are each column vectors of dimension k <img src="https://render.githubusercontent.com/render/math?math=\times"> j, were k is the number of nodes in that layer and j is the number of activation inputs.  
+* The parameters associated with each layer are <img src="https://render.githubusercontent.com/render/math?math=w^{[1]}"> and <img src="https://render.githubusercontent.com/render/math?math=b^{[l]}"> which are vectors of dimension k<img src="https://render.githubusercontent.com/render/math?math=\times">j, were k is the number of nodes in that layer and j is the number of activation inputs and column vector of dimension k<img src="https://render.githubusercontent.com/render/math?math=\times">1.  
 * A two layer neural network comprises of the input layer (layer 0), hidden layer and output layer.  
-* 
+* For input x, the parameters of the hidden layer and output layer can be represented in vectorized notation as:
+    * <img src="https://render.githubusercontent.com/render/math?math=z^{[1]} = W^{[1]}a^{[0]}%2Bb^{[1]}">  
+    * <img src="https://render.githubusercontent.com/render/math?math=a^{[1]} = \sigma(z^{[1]})">  
+    * <img src="https://render.githubusercontent.com/render/math?math=z^{[2]} = W^{[2]}a^{[1]}%2Bb^{[2]}">  
+    * <img src="https://render.githubusercontent.com/render/math?math=a^{[2]} = \sigma(z^{[2]})">,  
+        
+        Where,  
+            <img src="https://render.githubusercontent.com/render/math?math=W^{[1]} = \left[w_{1}^{[1]T}x%2C w_{2}^{[1]T}x%2C w_{3}^{[1]T}x%2C w_{4}^{[1]T}x%2C \right]^{T}">, a 4<img src="https://render.githubusercontent.com/render/math?math=\times">3 matrix for 3 inputs (layer 0) and 4 nodes stacked in the hidden layer (layer 1),  
+            and <img src="https://render.githubusercontent.com/render/math?math=a^{[0]}=x">  
