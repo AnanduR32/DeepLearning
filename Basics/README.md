@@ -35,4 +35,8 @@ For the given cost function,<img src="https://render.githubusercontent.com/rende
     w = w + learning_rate * slope_dJ_by_dw # Slope of cost function w.r.t w
     b = b + learning_rate * slope_dJ_by_db # Slope of cost function w.r.t b
 ```
- 
+
+**Intuition behind working of gradient descent**:   
+Taking derivative of the cost function at a point (w,b) gives the surface(function) w.r.t these points, and the value of w and b are adjusted taking the derivative of J w.r.t w and b respectively.   
+When we take derivative of a function say, <img src="https://render.githubusercontent.com/render/math?math=a^{2}"> we get <img src="https://render.githubusercontent.com/render/math?math=2a"> which tells us that for any value of a, if it were to be incremeneted by a very small value of the order of <img src="https://render.githubusercontent.com/render/math?math=10^{-\infinity}"> then the value of the resultant of the function increases by approximately <img src="https://render.githubusercontent.com/render/math?math=2a"> times. We apply this principle in figuring out the optimum minima for any given function by progressively decrementing/incrementing the values the parameters till we get `slope == 0`, which for a convex function is the optimum minima.  
+
