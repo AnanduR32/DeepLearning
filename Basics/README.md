@@ -76,11 +76,11 @@ o/p - [0.16131403]
 Each layer comprises of one or more nodes and the `parameters` of node are represented with layer identity enclosed within `square brackets []`.   
 
 At each layer of the neural network, that comprises of stack of nodes, comprise of both their own individual `z`, <img src="https://render.githubusercontent.com/render/math?math=z^{[l]}=W^{[l]}x%2Bb^{[l]}"> calculation as well as for `a`, <img src="https://render.githubusercontent.com/render/math?math=a^{[l]}=\sigma(z^{[l]})">  
-The final output of the neural network is given by <img src="https://render.githubusercontent.com/render/math?math=a^{[l]}"> provided l is the final layer output layer of the network.  
+The final output of the neural network is given by <img src="https://render.githubusercontent.com/render/math?math=a^{[l]}"> provided l is the final output layer of the network.  
 
 Basics:
 * <img src="https://render.githubusercontent.com/render/math?math=a^{[0]}"> represent the '*activations*' to the input layer of the neural network.  
-* The parameters associated with each layer are <img src="https://render.githubusercontent.com/render/math?math=w^{[1]}"> and <img src="https://render.githubusercontent.com/render/math?math=b^{[l]}"> which are vectors of dimension k<img src="https://render.githubusercontent.com/render/math?math=\times">j, were k is the number of nodes in that layer and j is the number of activation inputs and column vector of dimension k<img src="https://render.githubusercontent.com/render/math?math=\times">1.  
+* The parameters associated with each layer are <img src="https://render.githubusercontent.com/render/math?math=w^{[1]}"> and <img src="https://render.githubusercontent.com/render/math?math=b^{[l]}"> which are vectors of dimension k x j, were k is the number of nodes in that layer and j is the number of activation inputs, and column vector of dimension k x 1 respectively.  
 * A two layer neural network comprises of the input layer (layer 0), hidden layer and output layer.  
 * For input x, the parameters of the hidden layer and output layer can be represented in vectorized notation as:
     * <img src="https://render.githubusercontent.com/render/math?math=z^{[1]} = W^{[1]}a^{[0]}%2Bb^{[1]}">  
