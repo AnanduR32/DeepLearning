@@ -91,3 +91,4 @@ Basics:
         Where,  
             <img src="https://render.githubusercontent.com/render/math?math=W^{[1]} = \left[w_{1}^{[1]T}x%2C w_{2}^{[1]T}x%2C w_{3}^{[1]T}x%2C w_{4}^{[1]T}x%2C \right]^{T}">, a 4<img src="https://render.githubusercontent.com/render/math?math=\times">3 matrix for 3 inputs (layer 0) and 4 nodes stacked in the hidden layer (layer 1),  
             and <img src="https://render.githubusercontent.com/render/math?math=a^{[0]}=x">  
+    <img src="images/3Layer_NeuralNet.png">
