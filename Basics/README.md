@@ -91,4 +91,53 @@ Basics:
         Where,  
             <img src="https://render.githubusercontent.com/render/math?math=W^{[1]} = \left[w_{1}^{[1]T}x%2C w_{2}^{[1]T}x%2C w_{3}^{[1]T}x%2C w_{4}^{[1]T}x%2C \right]^{T}">, a 4<img src="https://render.githubusercontent.com/render/math?math=\times">3 matrix for 3 inputs (layer 0) and 4 nodes stacked in the hidden layer (layer 1),  
             and <img src="https://render.githubusercontent.com/render/math?math=a^{[0]}=x">  
-    <img src="images/3Layer_NeuralNet.png">
+    <img src="images/3Layer_NeuralNet.png">  
+       
+    Here, 
+    <div display="block" overflow="auto">
+      <table position="absolute" align="left">  
+          <thead>
+            <tr>
+              <td>Parameter - Matrix</td>
+              <td>Dimension</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=a^{0}"></td>
+              <td>3 X 1</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=w^{1}"></td>
+              <td>4 X 3</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=b^{1}"></td>
+              <td>4 X 1</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=a^{1}"></td>
+              <td>4 X 1</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=w^{2}"></td>
+              <td>1 X 4</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=b^{2}"></td>
+              <td>1 X 1</td>
+            </tr>
+            <tr>
+              <td><img src="https://render.githubusercontent.com/render/math?math=a^{2}"></td>
+              <td>1 X 1</td>
+            </tr>
+          </tbody>
+      </table>
+      <div padding="2em" position="absolute" align="center" top="-100px">
+        <img src="https://render.githubusercontent.com/render/math?math=a^{[1]}=\sigma\left(w^{[1]}%2Ea^{[0]}%2Bb^{[1]}\right)"><br>
+        <img src="https://render.githubusercontent.com/render/math?math=(4,1)=\sigma\left((4,3)%2E(3,1)%2B(4,1)\right)"><br><br>
+        <img src="https://render.githubusercontent.com/render/math?math=a^{[2]}=\sigma\left(w^{[2]}%2Ea^{[1]}%2Bb^{[2]}\right)"><br>
+        <img src="https://render.githubusercontent.com/render/math?math=(1,1)=\sigma\left((1,4)%2E(4,1)%2B(1,1)\right)">
+      </div>
+    </div
+    
