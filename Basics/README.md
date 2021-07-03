@@ -143,10 +143,22 @@ Basics:
   <br><br><br><br><br><br><br><br>   
   
   ### Activation functions  
+  Activation functions is used to add a non-linear entity into the equation, whereas otherwise the resultant output of the neural network would simply be a linear combination of the inputs, and any additional hidden layer will not improve the model, and is quite redundant. We use linear(identity) function in case of regression models, eg: Predicting the house price given certain parameters, in this case the output layer activation function can be ReLU so that the output will always be <img src="https://render.githubusercontent.com/render/math?math=\gt0">    
+  
   For all nodes in the neural network in the hidden layers it is generally preferably to use tanh() activation function instead of sigmoid   
       <img src="https://render.githubusercontent.com/render/math?math=tanh(z)=\frac{e^{z}%2De^{%2Dz}}{e^{z}%2Be^{%2Dz}}">  
-  With the exception of output layer in cases where <img src="https://render.githubusercontent.com/render/math?math=y\in\{0,1\}"> where we'd want <img src="https://render.githubusercontent.com/render/math?math=\hat{y}\in\{0,1\}">  
+  With the exception of output layer in cases where <img src="https://render.githubusercontent.com/render/math?math=y\in\{0,1\}"> where we'd want <img src="https://render.githubusercontent.com/render/math?math=\hat{y}\in\{0,1\}"> for binary classification  
   
-  But these functions, for very small values of slope scales slowly, due to which we instead use *rectified linear* function, wherein when the value of z is negative the derivative is 0, and positive otherwise.  
+  But these functions, for very small values of slope scales slowly, due to which we instead use `rectified linear unit` function, wherein when the value of z is negative the derivative is 0, and positive otherwise.  
+  
+  **Derivatives of common activation functions**:  
+    * Sigmoid function: <img src="https://render.githubusercontent.com/render/math?math=g'(z) = \frac{d\left(g(z)\right)}{dz} = \frac{1}{1%2De^{%2Dz}}\left(1%2D\frac{1}{1%2De^{%2Dz}}\right) = a(1%2Da)">  
+    * Tanh function: <img src="https://render.githubusercontent.com/render/math?math=g'(z) = \frac{d\left(g(z)\right)}{dz} = 1%2D\left(tanh(z)\right)^{2} = 1%2Da^{2}">  
+    * ReLU:  
+          <img src="https://render.githubusercontent.com/render/math?math=g'(z) = \left(\begin{align*}0 if z<0 \\1 if z>0\end{align*}\right)">
+    * Leaky ReLU:  
+          <img src="https://render.githubusercontent.com/render/math?math=g'(z) = \left(\begin{align*}0.01 if z<0 \\1 if z>0\end{align*}\right)">
+  
+  
   
     
