@@ -140,4 +140,13 @@ Basics:
         <img src="https://render.githubusercontent.com/render/math?math=(1,1)=\sigma\left((1,4)%2E(4,1)%2B(1,1)\right)">
       </div>
     </div
+  <br><br><br><br><br><br><br><br>   
+  
+  ### Activation functions  
+  For all nodes in the neural network in the hidden layers it is generally preferably to use tanh() activation function instead of sigmoid   
+      <img src="https://render.githubusercontent.com/render/math?math=tanh(z)=\frac{e^{z}%2De^{%2Dz}}{e^{z}%2Be^{%2Dz}}">  
+  With the exception of output layer in cases where <img src="https://render.githubusercontent.com/render/math?math=y\in\{0,1\}"> where we'd want <img src="https://render.githubusercontent.com/render/math?math=\hat{y}\in\{0,1\}">  
+  
+  But these functions, for very small values of slope scales slowly, due to which we instead use *rectified linear* function, wherein when the value of z is negative the derivative is 0, and positive otherwise.  
+  
     
