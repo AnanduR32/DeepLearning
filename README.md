@@ -1,2 +1,5 @@
 # DeepLearning
-My deep learning journey using Fast.ai
+My deep learning journey:
+* sklearn
+* Fast.ai
+* Nvidia RAPIDS
