@@ -160,22 +160,22 @@ Basics:
           <img src="https://render.githubusercontent.com/render/math?math=g'(z) = \left(\begin{align*}0.01 if z<0 \\1 if z>0\end{align*}\right)">
   
   **Equations**: 
-    * Forward pass:   
-          <img src="https://render.githubusercontent.com/render/math?math=Z^{[1]} = W^{[1]}%2EX%2BB^{[1]}">  
-          <img src="https://render.githubusercontent.com/render/math?math=A^{[1]} = tanh(Z^{[1]})">  
-          <img src="https://render.githubusercontent.com/render/math?math=Z^{[2]} = W^{[2]}%2EA^{[1]}%2BB^{[2]}">  
-          <img src="https://render.githubusercontent.com/render/math?math=A^{[2]} = sigmoid(Z^{[2]})">  
-    * Backward pass:  
-          <img src="https://render.githubusercontent.com/render/math?math=dZ^{[2]} = A^{[2]} - Y">  
-          <img src="https://render.githubusercontent.com/render/math?math=dW^{[2]} = \frac{dZ^{[2]}%2EA^{[1]T}}{m}">  
-          <img src="https://render.githubusercontent.com/render/math?math=dB^{[2]} = \frac{\mathrm{np.sum}(dZ^{[2]}%2Ckeepdims=True%2Caxis=1)}{m}">  
-          <img src="https://render.githubusercontent.com/render/math?math=W^{2} = W^{[2]}%2D\mathit{alpha}dW^{[2]}">  
-          <img src="https://render.githubusercontent.com/render/math?math=B^{2} = B^{[2]}%2D\mathit{alpha}dB^{[2]}">  
-          <img src="https://render.githubusercontent.com/render/math?math=dZ^{[2]} = W^{[2]}%2EdZ^{[2]}*(1%2DA^{[1]^{2}})">  
-          <img src="https://render.githubusercontent.com/render/math?math=dW^{[1]} = \frac{dZ^{[1]}%2EX^{T}}{m}">  
-          <img src="https://render.githubusercontent.com/render/math?math=dB^{[1]} = \frac{\mathrm{np.sum}(dZ^{[1]}%2Ckeepdims=True%2Caxis=1)}{m}">  
-          <img src="https://render.githubusercontent.com/render/math?math=W^{1} = W^{[1]}%2D\mathit{alpha}dW^{[1]}">  
-          <img src="https://render.githubusercontent.com/render/math?math=B^{1} = B^{[1]}%2D\mathit{alpha}dB^{[1]}">  
+    * **Forward pass**:   
+         * <img src="https://render.githubusercontent.com/render/math?math=Z^{[1]} = W^{[1]}%2EX%2BB^{[1]}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=A^{[1]} = tanh(Z^{[1]})">  
+         * <img src="https://render.githubusercontent.com/render/math?math=Z^{[2]} = W^{[2]}%2EA^{[1]}%2BB^{[2]}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=A^{[2]} = sigmoid(Z^{[2]})">  
+    * **Backward pass**:  
+         * <img src="https://render.githubusercontent.com/render/math?math=dZ^{[2]} = A^{[2]} - Y">  
+         * <img src="https://render.githubusercontent.com/render/math?math=dW^{[2]} = \frac{dZ^{[2]}%2EA^{[1]T}}{m}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=dB^{[2]} = \frac{\mathrm{np.sum}(dZ^{[2]}%2Ckeepdims=True%2Caxis=1)}{m}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=W^{2} = W^{[2]}%2D\mathit{alpha}*dW^{[2]}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=B^{2} = B^{[2]}%2D\mathit{alpha}*dB^{[2]}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=dZ^{[2]} = W^{[2]}%2EdZ^{[2]}*(1%2DA^{[1]^{2}})">  
+         * <img src="https://render.githubusercontent.com/render/math?math=dW^{[1]} = \frac{dZ^{[1]}%2EX^{T}}{m}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=dB^{[1]} = \frac{\mathrm{np.sum}(dZ^{[1]}%2Ckeepdims=True%2Caxis=1)}{m}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=W^{1} = W^{[1]}%2D\mathit{alpha}*dW^{[1]}">  
+         * <img src="https://render.githubusercontent.com/render/math?math=B^{1} = B^{[1]}%2D\mathit{alpha}*dB^{[1]}">  
   
           
     
