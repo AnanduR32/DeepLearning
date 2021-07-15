@@ -178,8 +178,9 @@ Basics:
          * <img src="https://render.githubusercontent.com/render/math?math=B^{1} = B^{[1]}%2D\mathit{alpha}*dB^{[1]}">  
   
   ### Backpropagation derivatives
-    <img src="images/backprop_slope_derivation.png">
-  
+    <img src="images/backprop_slope_derivation_1.jpg">
+    <img src="images/backprop_slope_derivation_2.jpg">  
+
   ### Random initialization of weights
     if the weights are initialized to the same weight i.e. 0, then <img src="https://render.githubusercontent.com/render/math?math=a^{[1]}_1 = a^{[1]}_2"> for a given layer in the neural network, and consequently the values of <img src="https://render.githubusercontent.com/render/math?math=dz^{[1]}_1 = dz^{[1]}_2">  
     The weights should be initialized by random very small weights, furthermore the weights should be of the order of <img src="https://render.githubusercontent.com/render/math?math=10^{-2}"> such that the sigmoid function doesn't malfunction.
