@@ -1,7 +1,7 @@
 # AI
-AI refers to the effort to automate intellectual tasks normally performed by humans, it makes use of set of rules and algorithms to figure out outcome based on those rules. Initally rules were hardwired manually using common logic, but this method of manually specifying the rules is time consuming and unscalable for various fields, thus to automate this process emerged the field of machine learning, and deep learning is just a form of machine learning wherein we use neural networks that are based on the structure and functioning of neurons in human body.   
+AI refers to the effort to automate intellectual tasks normally performed by humans, it makes use of set of rules and algorithms to figure out outcome based on those rules. Initally rules were hardwired manually using common logic, but this method of manually specifying the rules is time consuming and unscalable for various fields, thus to automate this process emerged the field of machine learning, and deep learning is just a form of machine learning wherein we use **neural networks** inspired on the structure and functioning of neurons in human body, data is represented in layers, "extracted through a multistage information extraction process".
 
-Using the Data and Answer we can derive the rules using machine learning techniques, rather than the user giving the data and the rules to obtain the answer (which is classical programming techniques).  
+Using the `Data and Answer we can derive the rules using machine learning techniques`, rather than the user giving the data and the rules to obtain the answer (which is classical programming techniques).  
 
 The simplest form of a neural network is logistic regression for classification of objects.  
 
