@@ -202,7 +202,7 @@ Basics:
   * Number of Iterations  
   * Number of hidden layers in the network <img src="https://render.githubusercontent.com/render/math?math=\left(\mathrm{L}\right)">  
   * Number of hidden units in each layer <img src="https://render.githubusercontent.com/render/math?math=\left(n^{[l]}\right)">  
-  * Choice of activation functions (for each layer) <img src="https://render.githubusercontent.com/render/math?math=\left(g^{[l]}\left(z^{[l]}\right)\right)">   
+  * Choice of activation functions (for each layer) <img src="https://render.githubusercontent.com/render/math?math=\left(g^{[l]}\right)">   
   * Momentum  
   * Min-batch size  
   * Regularization parameters <img src="https://render.githubusercontent.com/render/math?math=\left(\lambda\right)">  
