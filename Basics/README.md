@@ -185,7 +185,17 @@ Basics:
     if the weights are initialized to the same weight i.e. 0, then <img src="https://render.githubusercontent.com/render/math?math=a^{[1]}_1 = a^{[1]}_2"> for a given layer in the neural network, and consequently the values of <img src="https://render.githubusercontent.com/render/math?math=dz^{[1]}_1 = dz^{[1]}_2">  
     The weights should be initialized by random very small weights, furthermore the weights should be of the order of <img src="https://render.githubusercontent.com/render/math?math=10^{-2}"> such that the sigmoid function doesn't malfunction.
     
-    
+ 
+## Deep Neural networks 
+  Each layer in the network tries to learn features whose complexity increases with each progressive (deeper) layer.  
+  Eg: In case of image recognition, the first layer works at feature detection, identifying edges and their orientation, based on the number of nodes in it, the next layer identifies objects in image formed by grouping up of edges, which in case of facial recognition could be used to recognise features of face such as shapes of nose, ear, eyes etc.   
+  And then finally the network can put together the different features and construct different types of faces with different structure and featues.   
+  
+  In case of audio/speech recognition, the first layer identifies the low level features of the audio, it's waveform, pitch, reverberations and so on, and the next layer puts together these detected features to construct words and then the next to construct sentences.  
+  
+  The earlier layers compute relatively simpler functions of the input whereas the deeper layers compute more complex functions.  
+  
+  
   
   
           
