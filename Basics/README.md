@@ -198,14 +198,14 @@ Basics:
 ## Hyper parameters
   Whiles the **weights**, **bias terms** etc are the parameters to the neural network, hyperparameters are those variables that specify how the parameters evolve and to what extent they do during the training process,   
   Hyperparameters:   
-  * learning rate <img src="https://render.githubusercontent.com/render/math?math=\alpha">   
+  * learning rate <img src="https://render.githubusercontent.com/render/math?math=\left(\alpha\right)">   
   * Number of Iterations  
-  * Number of hidden layers in the network  
-  * Number of hidden units in each layer  
-  * Choice of activation functions (for each layer)   
+  * Number of hidden layers in the network <img src="https://render.githubusercontent.com/render/math?math=\left(\mathrm{L}\right)">  
+  * Number of hidden units in each layer <img src="https://render.githubusercontent.com/render/math?math=\left(n^{[l]}\right)">  
+  * Choice of activation functions (for each layer) <img src="https://render.githubusercontent.com/render/math?math=\left(g^{[l]}\left(z^{[l]}\right)\right)">   
   * Momentum  
   * Min-batch size  
-  * Regularization parameters  
+  * Regularization parameters <img src="https://render.githubusercontent.com/render/math?math=\left(\lambda\right)">  
   
   
   
