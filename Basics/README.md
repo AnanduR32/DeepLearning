@@ -1,3 +1,10 @@
+# AI
+AI refers to the effort to automate intellectual tasks normally performed by humans, it makes use of set of rules and algorithms to figure out outcome based on those rules. Initally rules were hardwired manually using common logic, but this method of manually specifying the rules is time consuming and unscalable for various fields, thus to automate this process emerged the field of machine learning, and deep learning is just a form of machine learning wherein we use **neural networks** inspired on the structure and functioning of neurons in human body, data is represented in layers, "extracted through a multistage information extraction process".
+
+Using the `Data and Answer we can derive the rules using machine learning techniques`, rather than the user giving the data and the rules to obtain the answer (which is classical programming techniques).  
+
+The simplest form of a neural network is logistic regression for classification of objects.  
+
 # Logistic Regression
 Given,   
 <img src="https://render.githubusercontent.com/render/math?math=\mathrm{W}\in\mathbb{R}^{n_{x}}">  
@@ -178,14 +185,38 @@ Basics:
          * <img src="https://render.githubusercontent.com/render/math?math=B^{1} = B^{[1]}%2D\mathit{alpha}*dB^{[1]}">  
   
   ### Backpropagation derivatives
-    <img src="images/backprop_slope_derivation_1.jpg">
-    <img src="images/backprop_slope_derivation_2.jpg">  
+    <img width=49% src="images/backprop_slope_derivation_1.jpg">
+    <img width=49% src="images/backprop_slope_derivation_2.jpg">  
 
   ### Random initialization of weights
     if the weights are initialized to the same weight i.e. 0, then <img src="https://render.githubusercontent.com/render/math?math=a^{[1]}_1 = a^{[1]}_2"> for a given layer in the neural network, and consequently the values of <img src="https://render.githubusercontent.com/render/math?math=dz^{[1]}_1 = dz^{[1]}_2">  
     The weights should be initialized by random very small weights, furthermore the weights should be of the order of <img src="https://render.githubusercontent.com/render/math?math=10^{-2}"> such that the sigmoid function doesn't malfunction.
     
-    
+ 
+## Deep Neural networks 
+  Each layer in the network tries to learn features whose complexity increases with each progressive (deeper) layer.  
+  Eg: In case of image recognition, the first layer works at feature detection, identifying edges and their orientation, based on the number of nodes in it, the next layer identifies objects in image formed by grouping up of edges, which in case of facial recognition could be used to recognise features of face such as shapes of nose, ear, eyes etc.   
+  And then finally the network can put together the different features and construct different types of faces with different structure and featues.   
+  
+  In case of audio/speech recognition, the first layer identifies the low level features of the audio, it's waveform, pitch, reverberations and so on, and the next layer puts together these detected features to construct words and then the next to construct sentences.  
+  
+  The earlier layers compute relatively simpler functions of the input whereas the deeper layers compute more complex functions.  
+  
+## Hyper parameters
+  Whiles the **weights**, **bias terms** etc are the parameters to the neural network, hyperparameters are those variables that specify how the parameters evolve and to what extent they do during the training process,   
+  Hyperparameters:   
+  * learning rate <img src="https://render.githubusercontent.com/render/math?math=\left(\alpha\right)">   
+  * Number of Iterations  
+  * Number of hidden layers in the network <img src="https://render.githubusercontent.com/render/math?math=\left(\mathrm{L}\right)">  
+  * Number of hidden units in each layer <img src="https://render.githubusercontent.com/render/math?math=\left(n^{[l]}\right)">  
+  * Choice of activation functions (for each layer) <img src="https://render.githubusercontent.com/render/math?math=\left(g^{[l]}\right)">   
+  * Momentum  
+  * Min-batch size  
+  * Regularization parameters <img src="https://render.githubusercontent.com/render/math?math=\left(\lambda\right)">  
+  
+  
+  
+  
   
   
           
