@@ -195,6 +195,20 @@ Basics:
   
   The earlier layers compute relatively simpler functions of the input whereas the deeper layers compute more complex functions.  
   
+## Hyper parameters
+  Whiles the **weights**, **bias terms** etc are the parameters to the neural network, hyperparameters are those variables that specify how the parameters evolve and to what extent they do during the training process,   
+  Hyperparameters: 
+      * learning rate: <img src="https://render.githubusercontent.com/render/math?math=\alpha">   
+      * Number of Iterations  
+      * Number of hidden layers in the network  
+      * Number of hidden units in each layer
+      * Choice of activation functions (for each layer)   
+      * Momentum  
+      * Min-batch size  
+      * Regularization parameters  
+  
+  
+  
   
   
   
