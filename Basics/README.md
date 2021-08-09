@@ -21,7 +21,12 @@ and,
 <img src="https://render.githubusercontent.com/render/math?math=\sigma\left(z\right) = \frac{1}{1%2Be^{z}}">  
   
 ### Cost function 
-The **Loss function** is given by <br> <img src="https://render.githubusercontent.com/render/math?math=\mathcal{L}\left(\hat{y}%2Cy\right) = %2D\left(ylog\hat{y} %2B \left(1 %2D y\right)log\left(1 %2D \hat{y}\right)\right)">  
+The **Loss function** is given by <br> 
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=\mathcal{L}\left(\hat{y}%2Cy\right) = %2D\left(ylog\hat{y} %2B \left(1 %2D y\right)log\left(1 %2D \hat{y}\right)\right)">
+    <br>
+  </p>  
 
 **Intuition behind the loss function:**  
 * For y = 1, we want <img src="https://render.githubusercontent.com/render/math?math=log\hat{y}"> to be as large as possible
@@ -29,7 +34,12 @@ The **Loss function** is given by <br> <img src="https://render.githubuserconten
 
 Because in both cases since terms are enclosed in `-ve`, if the term is large enough, <img src="https://render.githubusercontent.com/render/math?math=\mathcal{L}"> is minimized.  
 
-**Cost Function** <br> <img src="https://render.githubusercontent.com/render/math?math=\mathit{J}\left(w,b\right) = \frac{1}{m}\sum_{i=1}^{m}\mathcal{L}\left(\hat{y}^{(i)}%2Cy^{(i)}\right)">  
+**Cost Function** <br> 
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=\mathit{J}\left(w,b\right) = \frac{1}{m}\sum_{i=1}^{m}\mathcal{L}\left(\hat{y}^{(i)}%2Cy^{(i)}\right)">
+    <br>
+  </p>  
 For `m` training samples.  
 
 The goal is to find the values of `w` and `b` that minimizes the cost function <img src="https://render.githubusercontent.com/render/math?math=\mathit{J}">, which can be accomplished using gradient descent.  
@@ -222,7 +232,11 @@ Basics:
   
       Penalizing on the cost function <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J(m)}">, with additional term <img src="https://render.githubusercontent.com/render/math?math=\lambda">  
       As in,  
-          <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J(...)} = \mathcal{L}\left(\hat{y}^{(i)}%2Cy^{(i)}\right)%2B\frac{\lambda}{2m}\sum_{l}\parallel w^{[l]}\parallel^{2}_{f}">  
+          <p align="center">
+            <br>
+              <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J(...)} = \mathcal{L}\left(\hat{y}^{(i)}%2Cy^{(i)}\right)%2B\frac{\lambda}{2m}\sum_{l}\parallel w^{[l]}\parallel^{2}_{f}">
+            <br>
+          </p>  
   
       The penalizing term of L2 regularization in neural networks in known as *Frobenius norm* which simply the *Eucledian norm* but for matrices instead of vectors.  
   
@@ -236,6 +250,7 @@ Basics:
         For a specific layer n <img src="https://render.githubusercontent.com/render/math?math=l^{n}">, create a dropout vector <img src="https://render.githubusercontent.com/render/math?math=d^{n}">, which is a boolean vector of same dimensions as the output of the layer <img src="https://render.githubusercontent.com/render/math?math=a^{n}">, with boolean values computed from randomized probabilities and relational operator to check if this value is above a certain threshold "keep_prob", which is the probability to decide whether that node is dropped out or not.  
       
       <p align="center">
+        <br>
         <img src="https://render.githubusercontent.com/render/math?math=d^{n} = \mathrm{np.random.rand}(a^{n}.shape[0],a^{n}.shape[1])\lt \mathrm{keep_prob}">   
       </p>
       If keep_prob = p, then there's a (1-p) chance that the corresponding node will be removed from the layer based on the dropout vector values.    
@@ -244,10 +259,7 @@ Basics:
       <p align="center">
       <img src="https://render.githubusercontent.com/render/math?math=\mathrm{np.multiply}(a^{n}%2Cd^{n})">  
       </p>
-      Equivalent to: 
-        <p align="center">
-          <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{n}*=d^{n}">   
-        </p>
+      Equivalent to: <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{n}*=d^{n}">   
       
   
   
