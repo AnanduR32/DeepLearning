@@ -215,6 +215,24 @@ Basics:
   * Regularization parameters <img src="https://render.githubusercontent.com/render/math?math=\left(\lambda\right)">  
   
   
+# Regularization for neural networks   
+  To reduce overfitting on training dataset, to come up with a model that has high accuracy, as well as generalises well on unseen data.  
+  Types:  
+  * L2 regularization (most widely used)    
+  
+      Penalizing on the cost function <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J(m)}">, with additional term <img src="https://render.githubusercontent.com/render/math?math=\lambda">  
+      As in,  
+          <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J(...)} = \mathcal{L}\left(\hat{y}^{(i)}%2Cy^{(i)}\right)%2B\frac{\lambda}{2m}\sum_{l}\parallel w^{[l]}\parallel^{2}_{f}">  
+  
+      The penalizing term of L2 regularization in neural networks in known as *Frobenius norm* which simply the *Eucledian norm* but for matrices instead of vectors.  
+  
+      The penalizing term increases the cost function, reducing the weights further, <img src="https://render.githubusercontent.com/render/math?math=w \rightarrow 0">   
+      Making the overall network more linear, unable to fit complex functions.  
+  * Dropout regularization (Inverted dropout)
+  
+      Probabilities are assigned to each node in the network and they are removed randomly based on these probabilities from each iteration.  
+  
+      A common implementation of dropout regularization is the "*Inverted dropout*"
   
   
   
