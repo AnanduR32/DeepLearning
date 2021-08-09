@@ -232,7 +232,23 @@ Basics:
   
       Probabilities are assigned to each node in the network and they are removed randomly based on these probabilities from each iteration.  
   
-      A common implementation of dropout regularization is the "*Inverted dropout*"
+      A common implementation of dropout regularization is the "*Inverted dropout*":  
+        For a specific layer n <img src="https://render.githubusercontent.com/render/math?math=l^{n}">, create a dropout vector <img src="https://render.githubusercontent.com/render/math?math=d^{n}">, which is a boolean vector of same dimensions as the output of the layer <img src="https://render.githubusercontent.com/render/math?math=a^{n}">, with boolean values computed from randomized probabilities and relational operator to check if this value is above a certain threshold "keep_prob", which is the probability to decide whether that node is dropped out or not.  
+      
+      <p align="center">
+        <img src="https://render.githubusercontent.com/render/math?math=d^{n} = \mathrm{np.random.rand}(a^{n}.shape[0],a^{n}.shape[1])\lt \mathrm{keep_prob}">   
+      </p>
+      If keep_prob = p, then there's a (1-p) chance that the corresponding node will be removed from the layer based on the dropout vector values.    
+  
+      To simulate the dropout, we nullify the corresponding output value in vector <img src="https://render.githubusercontent.com/render/math?math=a^{n}"> by multipling the original <img src="https://render.githubusercontent.com/render/math?math=a^{n}"> with the dropout vector.  
+      <p align="center">
+      <img src="https://render.githubusercontent.com/render/math?math=\mathrm{np.multiply}(a^{n}%2Cd^{n})">  
+      </p>
+      Equivalent to: 
+        <p align="center">
+          <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{n}*=d^{n}">   
+        </p>
+      
   
   
   
