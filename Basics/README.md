@@ -260,6 +260,66 @@ Basics:
       <img src="https://render.githubusercontent.com/render/math?math=\mathrm{np.multiply}(a^{n}%2Cd^{n})">  
       </p>
       Equivalent to: <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{n}*=d^{n}">   
+  
+      Finally <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{n}"> is multiplied by <img align="center" src="https://render.githubusercontent.com/render/math?math=\frac{1}{keep_prob}">, which is done so as to bump up the value of <img align="center" src="https://render.githubusercontent.com/render/math?math=z^{n%2D1}"> from the missing/shut-off nodes.  
+      
+      This technique is used by default in computer vision learning models.  
+  
+  * Data augmentation to increase the training data volume  
+  * Early stopping after n iterations at the point at which dev-set error which had been decreasing till that point along with the train-set error, starts increasing instead. Which indicates that the model was performing optimally for the train-set as well as dev-set for the said number of iteration, but then overfit on the training data and it's performance will progressively decrease for the proceeding iterations for the dev-set.    
+  
+# Handling explosion/vanishing of gradients 
+  
+  Consider a very deep neural network with identity activation function and zero bias term *b*, then the overall output of the network is just <img align="center" src="https://render.githubusercontent.com/render/math?math=a^{l}=w^{l-1}*w^{l-2}*...*w^{3}*w^{2}*w^{1}*">   
+  If the value of the gradients are slightly greater than identity matrix, then the gradients explode exponentially, and if less, then they vanish - diminishing in value exponentially.  
+  
+  To get around this problem, weight initialization for a layer *l* is done as, 
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=w^{l} = \mathrm{np.random.rand}(shape)*\mathrm{np.sqrt}\left(\frac{1}{n^{l-1}}\right)">
+    <br>
+  </p>
+  For relu activation function,
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=w^{l} = \mathrm{np.random.rand}(shape)*\mathrm{np.sqrt}\left(\frac{2}{n^{l-1}}\right)">
+    <br>
+  </p>
+  is found to perform better.  
+  
+# Gradient checking in neural network
+  To check whether the implementation of the neural network is sound and that the gradients are being calculated correctly.
+  
+  Take all the weights and bias terms in the order, <img src="https://render.githubusercontent.com/render/math?math=w^{[1]}%2Cb^{[1]}%2Cw^{[2]}%2Cb^{[2]}%2E%2E%2E%2Cw^{[l]}%2Cb^{[l]}"> and reshape into a <img src="https://render.githubusercontent.com/render/math?math=\mathrm{m}\times1"> vector, and concatenate them into a large vector <img src="https://render.githubusercontent.com/render/math?math=\theta">.
+  
+  Similar create another large vector <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}\theta"> using the set <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}w^{[1]}%2C\mathrm{d}b^{[1]}%2C\mathrm{d}w^{[2]}%2C\mathrm{d}b^{[2]}%2E%2E%2E%2C\mathrm{d}w^{[l]}%2C\mathrm{d}b^{[l]}">  
+  
+  Then we check whether <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}\theta"> is the gradient or slope of the cost function <img src="https://render.githubusercontent.com/render/math?math=\mathrm{J}(\theta)">  
+  
+  Create a loop, which iterate `len`<img src="https://render.githubusercontent.com/render/math?math=(\theta)"> times, computing the values of vector <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}_{approx}^{[i]}">  
+  
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}_{approx}^{[i]} = \frac{\mathrm{J}(\theta_{1}, \theta_{2}, ... \theta_{i} %2B \epsilon, ...) - \mathrm{J}(\theta_{1}, \theta_{2}, ... \theta_{i} %2D \epsilon, ...)}{2\epsilon}">
+    <br>
+  </p>  
+  
+  Then, <img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}_{approx}\theta">is compared with<img src="https://render.githubusercontent.com/render/math?math=\mathrm{d}\theta">to check their relative similarity using euclidean distance measure.    
+  <p align="center">
+    <br>
+    <img src="https://render.githubusercontent.com/render/math?math=\frac{\parallel\mathrm{d}_{approx}\theta%2D\mathrm{d}\theta\parallel_{2}}{\parallel\mathrm{d}_{approx}\theta\parallel_{2}%2B\parallel\mathrm{d}\theta\parallel_{2}}">
+    <br>
+  </p>  
+  
+  If the resultant similarity is of the order of:  
+  * Less than or equal to <img src="https://render.githubusercontent.com/render/math?math=10^{-7}">, it is ideal scenario and the gradient approximation is sound  
+  * Between <img src="https://render.githubusercontent.com/render/math?math=10^{-7}"> and <img src="https://render.githubusercontent.com/render/math?math=10^{-3}">, it is moderately sound  
+  * Greater than or equal to <img src="https://render.githubusercontent.com/render/math?math=10^{-3}">, implies unsound approximation.  
+  
+  
+  
+    
+  
       
   
   
