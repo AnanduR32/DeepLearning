@@ -316,6 +316,8 @@ Basics:
   * Between <img src="https://render.githubusercontent.com/render/math?math=10^{-7}"> and <img src="https://render.githubusercontent.com/render/math?math=10^{-3}">, it is moderately sound  
   * Greater than or equal to <img src="https://render.githubusercontent.com/render/math?math=10^{-3}">, implies unsound approximation.  
   
+  Note:  
+  * Gradient checking doesn't work when dropout regularization is implemented.  
   
   
     
