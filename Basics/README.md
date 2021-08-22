@@ -321,6 +321,25 @@ Basics:
   
   
     
+# Mini-Batch gradient descent 
+  
+  The gradient descent parameter optimization for very large dataset (Bigdata) tends to perform very slow or unable to execute altogether due to resource requirements not being met, therefore to address this issue the mini-batch gradient descent is introduced wherein we have split the entire training dataset into multiple batches and perform gradient descent on each batch whilst updating the parameters in each mini-batchs' iteration (epoch). 
+  
+    Epoch - The number of times a certain set of training data is used to train the model, generally we use more epochs to improve the convergence of the model.  
+  
+  Types:  
+    * When the batch size = m, then it denotes that the size of a single sub-batch is equal to the size of the training dataset, hence it acts as a typical batch gradient descent algorithm   
+    * When the batch size = 1, the gradient descent is referred to as "Stochastic gradient descent" wherein each row in the training dataset/each example acts as a mini-batch on it's own.  
+  
+# Exponentially weighted (moving) averages
+  A better performing optimization algorithm compared to mini-batch gradient descent.  
+  
+  Computed as,   
+  <img src="https://render.githubusercontent.com/render/math?math=V_{t}=\beta V_{t-1}%2B(1-\beta)\theta_{t}">  
+  
+  where,   
+  <img src="https://render.githubusercontent.com/render/math?math=\beta V_{t-1}"> represents the weighted average of the previous days for which the parameter <img src="https://render.githubusercontent.com/render/math?math=\beta"> decides the significance of, in the present/current weighted average, a higher values entails weighted average to be taken on a larger set of training samples, whereas a lower values produces more finely tuned weighted average across the dataset. 
+  
   
       
   
