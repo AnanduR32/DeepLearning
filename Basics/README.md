@@ -340,8 +340,14 @@ Basics:
   where,   
   <img src="https://render.githubusercontent.com/render/math?math=\beta V_{t-1}"> represents the weighted average of the previous days for which the parameter <img src="https://render.githubusercontent.com/render/math?math=\beta"> decides the significance of, in the present/current weighted average, a higher values entails weighted average to be taken on a larger set of training samples, whereas a lower values produces more finely tuned weighted average across the dataset. 
   
+  The larger the value of <img src="https://render.githubusercontent.com/render/math?math=\beta"> is the larger the time duration over which the reponse is averaged for.  
   
-      
+  eg: For a model that fits the temperature over an year, when <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.9"> then the weight of the temperatures drops exponentially by a factor of <img src="https://render.githubusercontent.com/render/math?math=\frac{1}{3}^{rd}"> for every 10 days. And for <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.98">, that duration increares to 50 days (or which ever unit time duration that is used for measurement)  
+  This increase is owing to the fact that a lot of the weight now is being given to the previous values that chains recursively for a larger period.  
+  A larger value for <img src="https://render.githubusercontent.com/render/math?math=\beta">, say 0.5, makes the model susceptible a lot of noise degrading the model performance, but such a model adapts much more quickly to the response (prediction).  
+  
+  
+  
   
   
   
