@@ -348,11 +348,14 @@ Basics:
   Based on the generalized equation <img src="https://render.githubusercontent.com/render/math?math=(1%2D\varepsilon)^\left(\frac{1}{\varepsilon}\right) = \frac{1}{e}">
   
   ### Implementing exponentially weighted averages 
-  for day 0, <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = 0"> and then progressively update the value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}">, for the corresponding daily temperature <img src="https://render.githubusercontent.com/render/math?math=\theta"> using the equation: <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = \beta\mathrm{V}_{\theta_{prev}}%2B(1%2D\beta)\theta_{i}">   
+  for day 0, <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = 0"> and then progressively update the value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}">, for the corresponding daily temperature <img src="https://render.githubusercontent.com/render/math?math=\theta"> using the equation: <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = \beta\mathrm{V}_{\theta_{prev}}%2B(1%2D\beta)\theta_{t}">   
   This implementation is memory efficient since it doesn't need to store all the values for <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> but continuously updates it's value, but is inefficient performance-wise for which we must compute average for a larger set of data.  
   
   ### Bias correction
-  Bias issue occurs due to the original value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> being 0. 
+  Bias issue occurs due to the original value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> being 0.  
+  The bias correction can be made by multiplying the <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> term with a factor of <img src="https://render.githubusercontent.com/render/math?math=\frac{1}{1%2D\beta^{t}}"> for the day that the model is computing it's results on.  
+  This influence of this factor is largely felt when **t** is very small and negligiable for very large values of **t**
+  
   
   
   
