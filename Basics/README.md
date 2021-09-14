@@ -345,7 +345,14 @@ Basics:
   eg: For a model that fits the temperature over an year, when <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.9"> then the weight of the temperatures drops exponentially by a factor of <img src="https://render.githubusercontent.com/render/math?math=\frac{1}{3}^{rd}"> for every 10 days. And for <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.98">, that duration increares to 50 days (or which ever unit time duration that is used for measurement)  
   This increase is owing to the fact that a lot of the weight now is being given to the previous values that chains recursively for a larger period.  
   A larger value for <img src="https://render.githubusercontent.com/render/math?math=\beta">, say 0.5, makes the model susceptible a lot of noise degrading the model performance, but such a model adapts much more quickly to the response (prediction).  
+  Based on the generalized equation <img src="https://render.githubusercontent.com/render/math?math=(1%2D\varepsilon)^\left(\frac{1}{\varepsilon}\right) = \frac{1}{e}">
   
+  ### Implementing exponentially weighted averages 
+  for day 0, <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = 0"> and then progressively update the value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}">, for the corresponding daily temperature <img src="https://render.githubusercontent.com/render/math?math=\theta"> using the equation: <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta} = \beta\mathrm{V}_{\theta_{prev}}%2B(1%2D\beta)\theta_{i}">   
+  This implementation is memory efficient since it doesn't need to store all the values for <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> but continuously updates it's value, but is inefficient performance-wise for which we must compute average for a larger set of data.  
+  
+  ### Bias correction
+  Bias issue occurs due to the original value of <img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{\theta}"> being 0. 
   
   
   
