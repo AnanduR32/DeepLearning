@@ -367,6 +367,31 @@ Basics:
   
   this averages the (change in) gradient descent over previous 10 (Given, <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.9">) values of gradient descent <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t,...,t%2D9}"> and <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t,..,t%2D9}">   
   
+ 
+# RMSProp 
+  
+  Reduces the derivates in the vertical direction whilst speeding up the horizontal progression towards the minima.  
+  
+  Algorithm:  
+  &nbsp;&nbsp;On a given iteration t:  
+  &nbsp;&nbsp;&nbsp;&nbsp;Compute <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t}">, <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{B}^{t}">,  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{W}^{t}} = \beta\mathrm{S}_{d\mathrm{W}^{t%2D1}} %2B (1%2D\beta)d\mathrm{W}^{2}">, and similarly   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{B}^{t}} = \beta\mathrm{S}_{d\mathrm{B}^{t%2D1}} %2B (1%2D\beta)d\mathrm{B}^{2}">  
+  
+  Note: <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{2}"> represents element-wise squaring of the components of <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}">  
+  
+  Updation of weights:  
+  &nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{W}=\mathrm{W} %2D \alpha\frac{d\mathrm{W}}{\sqrt{\mathrm{S}_{d\mathrm{W}^{t}}}}">  
+  &nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{W}=\mathrm{B} %2D \alpha\frac{d\mathrm{B}}{\sqrt{\mathrm{S}_{d\mathrm{B}^{t}}}}">  
+  
+  Intuition:  
+    Assuming <img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{W}}"> being relatively small whereas <img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{B}}"> relatively large, by virtue of which change in **W** is relatively larger compared to that of **B**.  
+  
+  Correction factor [To prevent that the algorithm doesn't divide by zero] <img src="https://render.githubusercontent.com/render/math?math=\epsilon"> is added to the demoninator in the Wight update step inorder to prevent the term from shooting off to infinity owing to a negligible denominator.   
+  Default value: <img src="https://render.githubusercontent.com/render/math?math=10^{-8}">  
+  
+  
+  
   
   
   
