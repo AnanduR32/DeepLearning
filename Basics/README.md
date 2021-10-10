@@ -390,6 +390,16 @@ Basics:
   Correction factor [To prevent that the algorithm doesn't divide by zero] <img src="https://render.githubusercontent.com/render/math?math=\epsilon"> is added to the demoninator in the Wight update step inorder to prevent the term from shooting off to infinity owing to a negligible denominator.   
   Default value: <img src="https://render.githubusercontent.com/render/math?math=10^{-8}">  
   
+# Adam optimization algorithm  
+  Implements both momentum and RMSProp,
+  
+  algorithm (with weights initialized to zero):  
+  &nbsp;&nbsp;On iteration t:  
+  &nbsp;&nbsp;&nbsp;&nbsp;Compute 
+  
+# Learning rate decay  
+  <img src="https://render.githubusercontent.com/render/math?math=\alpha = \frac{1}{1%2BdecayRate\times epochNumber}\alpha_{0}">
+  
   
   
   
