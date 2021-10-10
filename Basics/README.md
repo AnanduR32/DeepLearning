@@ -357,7 +357,15 @@ Basics:
   This influence of this factor is largely felt when **t** is very small and negligiable for very large values of **t**
   
   
+# Gradient descent with momentum  
   
+  Momentum:  
+  &nbsp;&nbsp;On a given iteration t:  
+  &nbsp;&nbsp;&nbsp;&nbsp;Compute <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t}">, <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{B}^{t}">,  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{d\mathrm{W}^{t}} = \beta\mathrm{V}_{d\mathrm{W}^{t%2D1}} %2B (1%2D\beta)d\mathrm{W}">, and similarly   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{d\mathrm{B}^{t}} = \beta\mathrm{V}_{d\mathrm{B}^{t%2D1}} %2B (1%2D\beta)d\mathrm{B}">  
+  
+  this averages the (change in) gradient descent over previous 10 (Given, <img src="https://render.githubusercontent.com/render/math?math=\beta = 0.9">) values of gradient descent <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t,...,t%2D9}"> and <img src="https://render.githubusercontent.com/render/math?math=d\mathrm{W}^{t,..,t%2D9}">   
   
   
   
