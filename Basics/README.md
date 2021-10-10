@@ -387,7 +387,7 @@ Basics:
   Intuition:  
     Assuming <img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{W}}"> being relatively small whereas <img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{B}}"> relatively large, by virtue of which change in **W** is relatively larger compared to that of **B**.  
   
-  Correction factor [To prevent that the algorithm doesn't divide by zero] <img src="https://render.githubusercontent.com/render/math?math=\epsilon"> is added to the demoninator in the Wight update step inorder to prevent the term from shooting off to infinity owing to a negligible denominator.   
+  Correction factor [To prevent that the algorithm doesn't divide by zero] <img src="https://render.githubusercontent.com/render/math?math=\epsilon"> is added to the demoninator in the Weight update step inorder to prevent the term from shooting off to infinity owing to a negligible denominator.   
   Default value: <img src="https://render.githubusercontent.com/render/math?math=10^{-8}">  
   
 # Adam optimization algorithm  
@@ -395,10 +395,34 @@ Basics:
   
   algorithm (with weights initialized to zero):  
   &nbsp;&nbsp;On iteration t:  
-  &nbsp;&nbsp;&nbsp;&nbsp;Compute 
+  &nbsp;&nbsp;&nbsp;&nbsp;Compute  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{d\mathrm{W}^{t}} = \beta\mathrm{V}_{d\mathrm{W}^{t%2D1}} %2B (1%2D\beta)d\mathrm{W}">, and similarly   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{V}_{d\mathrm{B}^{t}} = \beta\mathrm{V}_{d\mathrm{B}^{t%2D1}} %2B (1%2D\beta)d\mathrm{B}">   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{W}^{t}} = \beta\mathrm{S}_{d\mathrm{W}^{t%2D1}} %2B (1%2D\beta)d\mathrm{W}^{2}">, and similarly   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{S}_{d\mathrm{B}^{t}} = \beta\mathrm{S}_{d\mathrm{B}^{t%2D1}} %2B (1%2D\beta)d\mathrm{B}^{2}">
+  
+  Updation of weights:  
+  &nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{W}=\mathrm{W} %2D \alpha\frac{d\mathrm{W}}{\sqrt{\mathrm{S}_{d\mathrm{W}^{t}}}}">  
+  &nbsp;&nbsp;<img src="https://render.githubusercontent.com/render/math?math=\mathrm{W}=\mathrm{B} %2D \alpha\frac{d\mathrm{B}}{\sqrt{\mathrm{S}_{d\mathrm{B}^{t}}}}">  
   
 # Learning rate decay  
-  <img src="https://render.githubusercontent.com/render/math?math=\alpha = \frac{1}{1%2BdecayRate\times epochNumber}\alpha_{0}">
+  Slowly reducing the learning rate overtime. Intuitively it can be considered as taking larger steps initially, and then as we progress towards the minima the learning rate is reduced so as to avoid overshooting, this then allows and arriving.  
+  
+  Represented as,  
+  <img src="https://render.githubusercontent.com/render/math?math=\alpha = \frac{1}{1%2BdecayRate\times epochNumber}\alpha_{0}">   
+  &nbsp;&nbsp;where, <img src="https://render.githubusercontent.com/render/math?math=\alpha_{0}"> is some initial learning rate.  
+  
+  Alternatives:  
+  * <img src="https://render.githubusercontent.com/render/math?math=\alpha = 0.95^{epsilonNum}\alpha_{0}"> - exponentially decays   
+  * <img src="https://render.githubusercontent.com/render/math?math=\alpha = \frac{\mathrm{k}}{\sqrt{epochNum}}\alpha_{0}"> or <img src="https://render.githubusercontent.com/render/math?math=\alpha = \frac{k}{\sqrt{t}}\alpha_{0}">, where t represents the mini-batch set.  
+  * Discrete staircase learning rate decay.  
+  
+  * Manual decay, intuitively setting the decaying rate by studying the model and controlling the learning rate. This method is viable for a small set of models only.  
+  
+  
+  
+  
+  
   
   
   
