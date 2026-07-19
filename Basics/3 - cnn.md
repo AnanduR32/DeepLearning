@@ -155,3 +155,86 @@ Representations -
 
 - Generally pooling layers are used to reduce size of inputs to speed up computation
 - The kernal extracts the maximum/average value of the patch of image it is convolving
+
+## Architecture
+
+Multilayered feedforward neural network
+The first layer is the convolution layer, followed by multiple hidden layers which learns edges, patterns and so on inorder to classify.
+
+### Convolution Layer
+
+Parameters:
+
+- A set of K learnable Filter/Kernel
+  - Small, square
+  - After applying K Kernels to input volume, we have K 2-dim activation maps.
+    - There can be K kernels applied at a single intersection (say, between input and hidden layer), creating K feature maps, all of which are stacked together to form the input for the next hidden layer, which needs to have Kernel with depth K.
+    - The depth of Kernel at input level is the volume of image itself, then at subsequent layers the depth depends on the depth of feature map created previously.
+    - At lower levels of the network the neurons/nodes activate when detecting localized structures - edges and patterns,
+    - At higher level activation occurs when identifying holistic features such as eye, nose, sign etc.
+
+> Note: A kernel’s depth always automatically matches the depth of the input volume it is convolving over.
+
+- Inputs
+  - For the very first layer, the input depth is the number of channels in the image (3 for RGB)
+  - For subsequent hidden layers, the input depth is indeed equal to K - the number of filters applied in the previous layer.
+
+The process of convolving a small filter with a large input volume is entails the "local connectivity" and "receptive field" of particulat neuron.
+
+- local connectivity: Each hidden layer is connected to a small, local patch - 3 x 3 or  5 x 5, based on kernel size, from the previous layer.
+- Receptive field: A node in the hidden layer sees 9 pixels in the image, the next hidden layer nodes have higher receptive field as it sees a higher dimesion of original image that has been convolved.
+
+### Pooling Layer
+
+- A.k.a downsampling layer - dimensionality reduction (reducing number of parameters in input to a layer)
+- Similar sweeping function as seen in convolution layer
+- Use a filter of desired size to get max or average value from the overlapping patch of input.
+
+### Fully connected Layer
+
+- The input to this layer is flatted vector which is fed into a fully connected neural network (dense neural net layer)
+- The DNN ends with a softmax layer to predict the class.
+
+### Popular CNN Architectures
+
+- LeNet-5: Simplest and earliest CNN
+  - 6 Layers of convolutions alterating with subsampling/pooling layer
+  - Average pooling
+  - First and valid usecase - Handwritten digit recognition
+  - Using Tanh activation function
+- AlexNet
+  - Higher depth of convolutions alternating with max-pooling
+  - ReLu activation function
+  - Stochastic gradient descent with momentum
+- VGGNet
+  - Widely used
+- GooGelNet (Inception-V1)
+- RestNet
+- Inception-V4
+
+## Transfer learning
+
+- Using pretrained models to initialize or feature extract for task of interest.
+- The knowledge of already trained model is applied to related different problem.
+- Time saving, better generalization of model hence better performance
+- Not needing a lot of labelled data, whereas weights of pretrained models is available
+- Valuable in NLP
+
+## Region based CNNs
+
+> Traditional CNNs couldn't handle Object Detection efficiently because if multiple objects were scattered around, the network didn't know where to look.
+
+Instead of looking at the whole image at once, a separate algorithm picks out interesting "regions" (patches of the image that look like they might contain something), crops them out, and feeds those specific regions into a CNN to perform classification and localization.
+
+- A image classification model simply outputs the probability of an object/class in an image.
+- Image localization - finding the presense of object in image and the bounding boundary containing the object.
+- Object detection - Finding all objects present in an image with bounding box
+- Face verification - Detects if given image of person is exactly who they are, has to be highly accurate
+- Face recognition - Using a database of facial feature identify the person in the image.
+
+eg: RCNN, YOLO
+
+## Applications of CNN
+
+- Neural style transfer
+  - Take a content and style image and generate output image with content of content image and style of the style image.
