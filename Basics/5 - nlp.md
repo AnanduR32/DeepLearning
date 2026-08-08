@@ -31,3 +31,32 @@ The dense vectors can then be passed through RNN/Transformer architecture to sol
     - Continuous Bag of Words (CBOW): Predicts targets given it's surroundings context words
     - Skip-Gram: Predicts the surrounding context words given a singular target word.
 2. GloVe (Global Vectors for Word Representation) (Stanford): Combines the advantages of local context window methods with global matrix factorization. It trains explicitly on the global word-word co-occurance matrix of massive text corpus
+
+## Encoder Decoder
+
+- encoder: Compresses a variable length source sequence into a single, fixed-size context vector
+  Source Text: "I love coding"  
+  
+    | Text/Input | $x_i$ | Network/Internally | Output
+    | :--- | :--- | :--- | :---
+    | I | [$x_1$] | RNN ($x_1+h_0$ - initial state) | [$h_1$]
+    | Love | [$x_2$] | RNN ($x_1 + h_1$) | [$h_2$]
+    | Coding | [$x_3$] | RNN ($x_2 + h_2$) | [$h_3$] - Context vector
+
+- decoder: Unpacks the context vector to generate a completely new, variable-length target sequence.
+  Target Text: \<SOS> J'aime le code
+  > SOS - Start of sequence
+
+    | Input | Network/Internally | Output | Text
+    | :--- | :--- | :--- | :---
+    $h_3$ | RNN ($h_3 + y_0$) <br/>where $y_0$ = '\<SOS>' <br/>i.e. $s_1=f_{dec}(y_0,h_3)$ | $y_1$ = softmax($s_1$) | J'aime
+    | $y_1$, $s_1$ <br/>(Updated internal state,<br/>same as $h_1$ in concept) | RNN ($s_2=f_{dec}(y_1,s_1)$) | $y_2$ = softmax($s_2$) | le
+    | $y_2$, $s_2$ | RNN ($s_3=f_{dec}(y_2,s_2)$) | $y_3$ = softmax($s_3$) | code
+
+    Thus,  
+    $$s_t=\sigma(W_s.[s_{t-1},y_{t-1}] + b)$$
+    $$P(y_t=j|) = softmax(Vs_t + c)_j$$
+
+    and Loss:  
+    $$L(\theta)=\sum_{t=1}^TL_t(\theta)$$
+    $$L_t(\theta)=-\log P(y_t=I_t | y\lt{t},X)$$
