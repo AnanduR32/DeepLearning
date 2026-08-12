@@ -353,26 +353,54 @@ Using our newly updated weights:
 In real applications, networks take multiple inputs and outputs simultaneously using matrices.
 
 Given:
-- Input vector $X = \begin{bmatrix} 1.0 \\ 0.5 \end{bmatrix}$, Target $y = 1.0$, Learning Rate $\eta = 0.1$
+- Input vector $`X = \begin{bmatrix} 1.0 \\ 0.5 \end{bmatrix}`$, Target $`y = 1.0`$, Learning Rate $`\eta = 0.1`$
 - Weight matrices & Biases:
-  $$W^{[1]} = \begin{bmatrix} 0.2 & 0.4 \\ 0.3 & 0.1 \end{bmatrix}, \quad b^{[1]} = \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix}$$
-  $$W^{[2]} = \begin{bmatrix} 0.5 & 0.6 \end{bmatrix}, \quad b^{[2]} = \begin{bmatrix} 0.3 \end{bmatrix}$$
+
+$$W^{[1]} = \begin{bmatrix} 0.2 & 0.4 \\ 0.3 & 0.1 \end{bmatrix}, \quad b^{[1]} = \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix}$$  
+$$W^{[2]} = \begin{bmatrix} 0.5 & 0.6 \end{bmatrix}, \quad b^{[2]} = \begin{bmatrix} 0.3 \end{bmatrix}$$
 
 #### Matrix Calculations:
-1. **Forward Pass:**
-   $$z^{[1]} = W^{[1]} X + b^{[1]} = \begin{bmatrix} (0.2 \times 1.0) + (0.4 \times 0.5) \\ (0.3 \times 1.0) + (0.1 \times 0.5) \end{bmatrix} + \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix} = \begin{bmatrix} 0.4 \\ 0.35 \end{bmatrix} + \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix} = \begin{bmatrix} 0.50 \\ 0.55 \end{bmatrix}$$
-   $$a^{[1]} = \sigma(z^{[1]}) = \begin{bmatrix} \sigma(0.50) \\ \sigma(0.55) \end{bmatrix} = \begin{bmatrix} 0.6225 \\ 0.6341 \end{bmatrix}$$
-   $$z^{[2]} = W^{[2]} a^{[1]} + b^{[2]} = \begin{bmatrix} 0.5 & 0.6 \end{bmatrix} \begin{bmatrix} 0.6225 \\ 0.6341 \end{bmatrix} + 0.3 = 0.3113 + 0.3805 + 0.3 = 0.9918$$
-   $$\hat{y} = a^{[2]} = \sigma(0.9918) = 0.7294$$
+**1. Forward Pass**
 
-2. **Backward Pass:**
-   $$\delta^{[2]} = a^{[2]} - y = 0.7294 - 1.0 = -0.2706$$
-   $$\frac{\partial \mathcal{L}}{\partial W^{[2]}} = \delta^{[2]} \cdot (a^{[1]})^T = -0.2706 \times \begin{bmatrix} 0.6225 & 0.6341 \end{bmatrix} = \begin{bmatrix} -0.1684 & -0.1716 \end{bmatrix}$$
-   $$\delta^{[1]} = \left( (W^{[2]})^T \delta^{[2]} \right) \odot \sigma'(z^{[1]}) = \begin{bmatrix} 0.5 \\ 0.6 \end{bmatrix} (-0.2706) \odot \begin{bmatrix} 0.2350 \\ 0.2320 \end{bmatrix} = \begin{bmatrix} -0.0318 \\ -0.0377 \end{bmatrix}$$
-   $$\frac{\partial \mathcal{L}}{\partial W^{[1]}} = \delta^{[1]} X^T = \begin{bmatrix} -0.0318 \\ -0.0377 \end{bmatrix} \begin{bmatrix} 1.0 & 0.5 \end{bmatrix} = \begin{bmatrix} -0.0318 & -0.0159 \\ -0.0377 & -0.0189 \end{bmatrix}$$
+$$
+z^{[1]} = W^{[1]} X + b^{[1]} = \begin{bmatrix} (0.2 \times 1.0) + (0.4 \times 0.5) \\ (0.3 \times 1.0) + (0.1 \times 0.5) \end{bmatrix} + \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix} = \begin{bmatrix} 0.4 \\ 0.35 \end{bmatrix} + \begin{bmatrix} 0.1 \\ 0.2 \end{bmatrix} = \begin{bmatrix} 0.50 \\ 0.55 \end{bmatrix}
+$$
 
-3. **Update $W^{[1]}$:**
-   $$W^{[1]}_{\text{new}} = W^{[1]} - \eta \frac{\partial \mathcal{L}}{\partial W^{[1]}} = \begin{bmatrix} 0.2 & 0.4 \\ 0.3 & 0.1 \end{bmatrix} - 0.1 \begin{bmatrix} -0.0318 & -0.0159 \\ -0.0377 & -0.0189 \end{bmatrix} = \begin{bmatrix} 0.2032 & 0.4016 \\ 0.3038 & 0.1019 \end{bmatrix}$$
+$$
+a^{[1]} = \sigma(z^{[1]}) = \begin{bmatrix} \sigma(0.50) \\ \sigma(0.55) \end{bmatrix} = \begin{bmatrix} 0.6225 \\ 0.6341 \end{bmatrix}
+$$
+
+$$
+z^{[2]} = W^{[2]} a^{[1]} + b^{[2]} = \begin{bmatrix} 0.5 & 0.6 \end{bmatrix} \begin{bmatrix} 0.6225 \\ 0.6341 \end{bmatrix} + 0.3 = 0.3113 + 0.3805 + 0.3 = 0.9918
+$$
+
+$$
+\hat{y} = a^{[2]} = \sigma(0.9918) = 0.7294
+$$
+
+**2. Backward Pass**
+
+$$
+\delta^{[2]} = a^{[2]} - y = 0.7294 - 1.0 = -0.2706
+$$
+
+$$
+\frac{\partial \mathcal{L}}{\partial W^{[2]}} = \delta^{[2]} \cdot (a^{[1]})^T = -0.2706 \times \begin{bmatrix} 0.6225 & 0.6341 \end{bmatrix} = \begin{bmatrix} -0.1684 & -0.1716 \end{bmatrix}
+$$
+
+$$
+\delta^{[1]} = \left( (W^{[2]})^T \delta^{[2]} \right) \odot \sigma'(z^{[1]}) = \begin{bmatrix} 0.5 \\ 0.6 \end{bmatrix} (-0.2706) \odot \begin{bmatrix} 0.2350 \\ 0.2320 \end{bmatrix} = \begin{bmatrix} -0.0318 \\ -0.0377 \end{bmatrix}
+$$
+
+$$
+\frac{\partial \mathcal{L}}{\partial W^{[1]}} = \delta^{[1]} X^T = \begin{bmatrix} -0.0318 \\ -0.0377 \end{bmatrix} \begin{bmatrix} 1.0 & 0.5 \end{bmatrix} = \begin{bmatrix} -0.0318 & -0.0159 \\ -0.0377 & -0.0189 \end{bmatrix}
+$$
+
+**3. Update $W^{[1]}$**
+
+$$
+W^{[1]}_{\text{new}} = W^{[1]} - \eta \frac{\partial \mathcal{L}}{\partial W^{[1]}} = \begin{bmatrix} 0.2 & 0.4 \\ 0.3 & 0.1 \end{bmatrix} - 0.1 \begin{bmatrix} -0.0318 & -0.0159 \\ -0.0377 & -0.0189 \end{bmatrix} = \begin{bmatrix} 0.2032 & 0.4016 \\ 0.3038 & 0.1019 \end{bmatrix}
+$$
 
 ---
 
