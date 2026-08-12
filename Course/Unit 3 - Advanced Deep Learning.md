@@ -225,7 +225,8 @@ WITHOUT TRICK (Broken Backprop):         WITH REPARAMETERIZATION TRICK (Works!):
 ---
 
 ### VAE Loss Function
-$$\mathcal{L}_{\text{VAE}} = \underbrace{\|x - \hat{x}\|^2}_{\text{Reconstruction Loss (Looks like original)}} + \underbrace{D_{\text{KL}}\left( \mathcal{N}(\mu, \sigma^2) \,||\, \mathcal{N}(0, 1) \right)}_{\text{KL Divergence (Keeps latent space smooth & continuous)}}$$
+
+$$\mathcal{L}_{\text{VAE}} = \underbrace{\|x - \hat{x}\|^2}_{\text{Reconstruction Loss (Looks like original)}} + \underbrace{D_{\text{KL}}\left( \mathcal{N}(\mu, \sigma^2) \,||\, \mathcal{N}(0, 1) \right)}_{\text{KL Divergence (Keeps latent space smooth and continuous)}}$$
 
 ---
 
