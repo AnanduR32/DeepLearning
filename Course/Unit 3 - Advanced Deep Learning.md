@@ -1,636 +1,426 @@
 # Unit III — Advanced Deep Learning
 
-Course: 25CSA543A — Deep Learning for AI
+> **Course Code:** 25CSA543A — Deep Learning for AI  
+> **Target Audience:** College Freshmen / Beginners in AI  
+> **Core Objective:** Master generative AI (RBMs, Autoencoders, VAEs, GANs), Reinforcement Learning (DQN), and advanced training & deployment techniques in PyTorch and TensorFlow.
 
 ---
 
-## Joint Probability Density Functions and Generative Models
+## Table of Contents
+1. [Generative vs. Discriminative Models](#1-generative-vs-discriminative-models)
+   - [Analogy: The Art Critic vs. The Painter](#analogy-the-art-critic-vs-the-painter)
+   - [Joint Probability vs. Conditional Probability](#joint-probability-vs-conditional-probability)
+   - [Energy-Based Models](#energy-based-models)
+2. [Restricted Boltzmann Machines (RBM)](#2-restricted-boltzmann-machines-rbm)
+   - [Architecture: Visible and Hidden Layers](#architecture-visible-and-hidden-layers)
+   - [Why "Restricted"? (Conditional Independence)](#why-restricted-conditional-independence)
+   - [Contrastive Divergence (CD-k) Training](#contrastive-divergence-cd-k-training)
+3. [Deep Belief Networks (DBN)](#3-deep-belief-networks-dbn)
+   - [Greedy Layer-Wise Pretraining](#greedy-layer-wise-pretraining)
+   - [DBN vs. Single RBM](#dbn-vs-single-rbm)
+4. [Autoencoders](#4-autoencoders)
+   - [Architecture: Encoder, Bottleneck, Decoder](#architecture-encoder-bottleneck-decoder)
+   - [Types: Undercomplete, Sparse, Denoising, Contractive](#types-undercomplete-sparse-denoising-contractive)
+   - [Autoencoders vs. PCA (Nonlinear Manifolds)](#autoencoders-vs-pca-nonlinear-manifolds)
+5. [Variational Autoencoders (VAE)](#5-variational-autoencoders-vae)
+   - [Why Regular Autoencoders Fail at Generation](#why-regular-autoencoders-fail-at-generation)
+   - [Probabilistic Latent Space ($\mu$ and $\sigma$)](#probabilistic-latent-space-\mu-and-\sigma)
+   - [The Reparameterization Trick](#the-reparameterization-trick)
+   - [VAE Loss Function (Reconstruction + KL Divergence)](#vae-loss-function-reconstruction--kl-divergence)
+6. [Reinforcement Learning & Deep Q-Networks (DQN)](#6-reinforcement-learning--deep-q-networks-dqn)
+   - [Core Concepts: Agent, Environment, State, Action, Reward, Policy](#core-concepts-agent-environment-state-action-reward-policy)
+   - [The Exploration vs. Exploitation Dilemma](#the-exploration-vs-exploitation-dilemma)
+   - [Q-Learning & The Bellman Equation](#q-learning--the-bellman-equation)
+   - [DQN Innovations: Experience Replay & Target Networks](#dqn-innovations-experience-replay--target-networks)
+7. [Generative Adversarial Networks (GANs)](#7-generative-adversarial-networks-gans)
+   - [The Counterfeiter vs. Police Game](#the-counterfeiter-vs-police-game)
+   - [Minimax Objective Function](#minimax-objective-function)
+   - [Architectures: DCGAN and Conditional GAN (cGAN)](#architectures-dcgan-and-conditional-gan-cgan)
+   - [Mode Collapse & Stability Tricks](#mode-collapse--stability-tricks)
+8. [Training Challenges & Solutions](#8-training-challenges--solutions)
+   - [Vanishing & Exploding Gradients](#vanishing--exploding-gradients)
+   - [Batch Normalization Deep-Dive](#batch-normalization-deep-dive)
+   - [Dropout & Regularization Techniques](#dropout--regularization-techniques)
+   - [Data Augmentation (Geometric, Color, Mixup, CutMix)](#data-augmentation-geometric-color-mixup-cutmix)
+9. [Advanced Hyperparameter Tuning & Transfer Learning](#9-advanced-hyperparameter-tuning--transfer-learning)
+   - [Learning Rate Schedules (Cosine Annealing, Warmup)](#learning-rate-schedules-cosine-annealing-warmup)
+   - [Transfer Learning Across Domains](#transfer-learning-across-domains)
+10. [Deploying Deep Learning Models](#10-deploying-deep-learning-models)
+    - [Model Exports (ONNX, TorchScript, SavedModel, TFLite)](#model-exports-onnx-torchscript-savedmodel-tflite)
+    - [Model Optimization (Quantization, Pruning, Distillation)](#model-optimization-quantization-pruning-distillation)
+    - [Production Deployment Checklist](#production-deployment-checklist)
+11. [Unit III Cheat Sheet & Quick Reference](#11-unit-iii-cheat-sheet--quick-reference)
 
-Before diving into RBMs and GANs, we need to understand what makes a model "generative."
+---
 
-### Discriminative vs Generative
+## 1. Generative vs. Discriminative Models
 
-- **Discriminative model** — learns the decision boundary directly. Given input $x$, it models $P(y|x)$ — "what class does this belong to?" Examples: logistic regression, standard CNNs, SVMs.
-- **Generative model** — learns the underlying data distribution $P(x)$ (or the joint $P(x, y)$). It can then generate new samples that look like the training data. Examples: RBMs, VAEs, GANs.
+### Analogy: The Art Critic vs. The Painter
 
-### Joint probability density function
+Imagine two AI models evaluating artwork:
+- **Discriminative Model (The Art Critic):** It takes a completed painting ($x$) and determines whether it was painted by Picasso or Monet ($y$). It doesn't know how to paint; it only learns the **boundary separating classes**.
+- **Generative Model (The Painter):** It studies hundreds of Picasso paintings, learns the underlying rules of cubism, and can **paint a brand new Picasso-style portrait from scratch** ($x$).
 
-The joint pdf $P(x, y)$ captures the probability of seeing both a particular input $x$ and label $y$ together. From the joint, you can derive everything:
+```
+DISCRIMINATIVE MODEL : Inputs (X) -------------> [ Learns P(Y|X) Boundary ] -------------> Output Label (Y)
+                                                   "Is this a cat or dog?"
 
-- **Marginal**: $P(x) = \sum_y P(x, y)$ — probability of the input regardless of class
-- **Conditional**: $P(y|x) = P(x, y) / P(x)$ — this is what discriminative models learn directly
-- **Bayes' rule**: $P(y|x) = P(x|y) \cdot P(y) / P(x)$ — generative models often use this path
+GENERATIVE MODEL     : Random Noise / Class ----> [ Learns P(X) Distribution ] ----------> New Synthetic Image
+                                                   "Generate a new cat image!"
+```
 
-### Why generative models?
+---
 
-| Capability | Discriminative | Generative |
-|-----------|---------------|------------|
-| Classification | ✅ Direct, often more accurate | ✅ Via Bayes' rule |
-| Generate new samples | ❌ | ✅ Sample from $P(x)$ |
-| Handle missing data | ❌ | ✅ Marginalize out missing variables |
-| Semi-supervised learning | Limited | ✅ Use unlabeled data to learn $P(x)$ |
-| Detect anomalies | Indirect | ✅ Low $P(x)$ = anomaly |
+### Joint Probability vs. Conditional Probability
 
-### Energy-based models
+| Aspect | Discriminative Model | Generative Model |
+|:---|:---|:---|
+| **What it learns** | Conditional probability $P(y|x)$ | Joint probability $P(x, y)$ or input distribution $P(x)$ |
+| **Primary Goal** | Classify inputs into categories | Generate new realistic data samples |
+| **Examples** | Logistic Regression, CNN, SVM | RBM, VAE, GAN, Diffusion Models |
+| **Missing Data Handling** | Poor | Excellent (can marginalize out missing values) |
 
-Many generative models (including RBMs) define probability through an **energy function**:
+---
 
+### Energy-Based Models
+Many generative models use an **Energy Function** $E(x)$:
 $$P(x) = \frac{1}{Z} \exp(-E(x))$$
 
-where $Z = \sum_x \exp(-E(x))$ is the partition function (normalizing constant). Low energy = high probability. The model learns by pushing the energy down for training data and up for everything else.
-
-The challenge is that $Z$ is usually intractable to compute — which is why techniques like contrastive divergence (CD) and variational inference exist.
-
----
-
-## Restricted Boltzmann Machines (RBM)
-
-An RBM is an **energy-based generative model** with two layers — visible units **v** and hidden units **h** — but *no connections within the same layer*. That constraint (no visible-visible or hidden-hidden links) is what makes it "restricted" compared to a full Boltzmann machine, and it's also what makes training tractable.
-
-### How it works
-
-- Each connection between a visible unit $v_i$ and hidden unit $h_j$ has a weight $w_{ij}$
-- Each unit also has a bias: $a_i$ for visible, $b_j$ for hidden
-- The network defines an **energy function** over every possible configuration of (v, h):
-
-$$E(v, h) = -\sum_i a_i v_i - \sum_j b_j h_j - \sum_{i,j} v_i w_{ij} h_j$$
-
-Lower energy = more probable configuration. The model learns by pushing down the energy of training data configurations and pushing up the energy of everything else.
-
-### Why no intra-layer connections matter
-
-Because there are no connections within a layer, all hidden units are **conditionally independent** given the visible layer (and vice versa). This means:
-
-- Given input v, you can sample all hidden units in parallel: $P(h_j = 1 | v) = \sigma(b_j + \sum_i w_{ij} v_i)$
-- Given hidden state h, you can reconstruct all visible units in parallel: $P(v_i = 1 | h) = \sigma(a_i + \sum_j w_{ij} h_j)$
-
-This parallel sampling is what makes RBMs practical — a full Boltzmann machine would need slow iterative Gibbs sampling.
-
-### Contrastive Divergence (CD-k)
-
-Training an RBM requires computing the gradient of the log-likelihood, which involves an intractable partition function. **Contrastive Divergence** is the clever workaround:
-
-1. **Positive phase** — clamp training data on visible layer, sample hidden units
-2. **Negative phase** — reconstruct visible units from those hidden units, then re-sample hidden units
-3. **Update rule**: $\Delta w_{ij} = \eta \left( \langle v_i h_j \rangle_{\text{data}} - \langle v_i h_j \rangle_{\text{recon}} \right)$
-
-The idea: we only run the Gibbs chain for *k* steps (usually k=1) instead of running it to convergence. It's biased but works surprisingly well in practice.
-
-Think of it like this — you show the model real data, let it "dream" one step, and then nudge the weights so reality looks more probable than the dream.
-
-### What RBMs are good at
-
-- Feature extraction from unlabelled data
-- Pretraining layers of deep networks (more on this below)
-- Collaborative filtering (Netflix Prize famously used RBMs)
-- Dimensionality reduction
+Where $Z = \sum_x \exp(-E(x))$ is the normalizing **Partition Function**.
+- Low Energy = High Probability (Looks like realistic data).
+- High Energy = Low Probability (Looks like garbage/noise).
 
 ---
 
-## Deep Belief Networks (DBN)
+## 2. Restricted Boltzmann Machines (RBM)
 
-A DBN is built by **stacking multiple RBMs** on top of each other. The hidden layer of one RBM becomes the visible layer of the next. The key innovation is **greedy layer-wise pretraining**.
-
-### Greedy layer-wise pretraining
-
-Why "greedy"? Because you train one layer at a time, freezing the previous ones:
-
-1. Train the first RBM on raw input data
-2. Use the learned hidden representations as input to train the second RBM
-3. Repeat for as many layers as you want
-4. **Fine-tune** the entire stack with supervised backpropagation (using labels)
-
-Each new layer is guaranteed (in theory) to improve a lower bound on the log-likelihood of the data. In practice, this was a breakthrough — before this technique (Hinton et al., 2006), deep networks were notoriously hard to train because of vanishing gradients.
-
-### Why it helped historically
-
-- Random initialization of deep networks often landed in terrible local minima
-- Layer-wise pretraining gave the network a much better starting point
-- Each layer learns increasingly abstract features — edges → shapes → objects
-- Once modern tricks (ReLU, batch norm, Adam) arrived, pretraining became less critical, but the idea is still foundational
-
-| Aspect | Single RBM | DBN (stacked RBMs) |
-|--------|-----------|-------------------|
-| Depth | 2 layers (visible + hidden) | Many layers |
-| Training | Contrastive divergence | Greedy layer-wise + fine-tune |
-| Features | Low-level | Hierarchical (low → high) |
-| Use case | Feature extraction | Classification, generation |
-
----
-
-## Autoencoders
-
-An autoencoder learns to **compress** input into a lower-dimensional representation and then **reconstruct** it. The network is forced to learn the most important features because the bottleneck is smaller than the input.
-
-### Architecture
+An **RBM** is a two-layer, undirected generative model consisting of **Visible Units ($v$)** and **Hidden Units ($h$)**.
 
 ```
-Input (n dims) → Encoder → Latent space (k dims, k << n) → Decoder → Reconstructed input (n dims)
+  Hidden Layer (h)   :   ( h1 )       ( h2 )       ( h3 )       ( h4 )
+                           \         /  \         /  \         /
+                            \       /    \       /    \       /     (No connections WITHIN a layer!)
+                             \     /      \     /      \     /
+  Visible Layer (v)  :   ( v1 )       ( v2 )       ( v3 )       ( v4 )
 ```
 
-- **Encoder**: maps input $x$ to latent code $z = f(Wx + b)$
-- **Decoder**: maps latent code back to reconstruction $\hat{x} = g(W'z + b')$
-- **Loss**: reconstruction error, typically MSE: $\mathcal{L} = \|x - \hat{x}\|^2$
+### Why "Restricted"? (Conditional Independence)
+In a standard Boltzmann machine, all neurons connect to each other. In a **Restricted** Boltzmann Machine:
+- **No visible-to-visible connections.**
+- **No hidden-to-hidden connections.**
 
-The encoder and decoder are just neural networks — they can be as simple as a single linear layer or as deep as you want.
-
-### Types of autoencoders
-
-- **Undercomplete** — latent dimension < input dimension (forces compression)
-- **Sparse** — adds a sparsity penalty so most latent units are inactive; learns more interesting features even when the latent space is large
-- **Denoising** — input is corrupted with noise, but the target is the *clean* version; forces the model to learn robust features rather than just copying
-- **Contractive** — adds a penalty on the Jacobian of the encoder, making the representation insensitive to small input perturbations
-
-### What makes autoencoders different from PCA?
-
-PCA finds the best *linear* subspace. Autoencoders with nonlinear activations can capture **curved manifolds** in the data — they're doing nonlinear dimensionality reduction. With linear activations and MSE loss, an autoencoder actually recovers the same subspace as PCA.
+Because of this restriction, given the visible input $v$, **all hidden neurons can be calculated in parallel!**
+$$P(h_j = 1 | v) = \sigma\left(b_j + \sum_i w_{ij} v_i\right)$$
+$$P(v_i = 1 | h) = \sigma\left(a_i + \sum_j w_{ij} h_j\right)$$
 
 ---
 
-## Variational Autoencoder (VAE)
-
-Regular autoencoders map each input to a single point in latent space. VAEs instead map each input to a **probability distribution** — specifically a Gaussian with learned mean $\mu$ and variance $\sigma^2$. This turns the autoencoder into a proper generative model.
-
-### The key idea
-
-- Encoder outputs two vectors: $\mu(x)$ and $\log \sigma^2(x)$
-- Sample from the latent distribution: $z \sim \mathcal{N}(\mu, \sigma^2)$
-- Decoder reconstructs from the sample
-
-
-### Reparameterization trick
-
-There's a problem — sampling from $\mathcal{N}(\mu, \sigma^2)$ is a **random operation**, and you can't backpropagate through randomness. The reparameterization trick fixes this:
-
-Instead of sampling $z$ directly, sample $\epsilon \sim \mathcal{N}(0, 1)$ and compute:
-
-$$z = \mu + \sigma \cdot \epsilon$$
-
-Now the randomness is in $\epsilon$ (which doesn't depend on any parameters), and the gradients flow through $\mu$ and $\sigma$ just fine.
-
-### VAE loss function
-
-The loss has two parts:
-
-$$\mathcal{L} = \underbrace{\|x - \hat{x}\|^2}_{\text{reconstruction}} + \underbrace{D_{KL}\left(\mathcal{N}(\mu, \sigma^2) \| \mathcal{N}(0, 1)\right)}_{\text{regularization}}$$
-
-- **Reconstruction loss** — how well did the decoder reconstruct the input?
-- **KL divergence** — how far is the learned distribution from a standard normal?
-
-The KL term prevents the model from collapsing each input to a tiny point (which would defeat the purpose). It keeps the latent space smooth and continuous — neighboring points in latent space produce similar outputs, which means you can **interpolate** between data points and generate new samples by sampling from $\mathcal{N}(0, 1)$.
-
-| Feature | Regular Autoencoder | VAE |
-|---------|-------------------|-----|
-| Latent space | Deterministic point | Probability distribution |
-| Generation | Not straightforward | Sample from $\mathcal{N}(0, 1)$ and decode |
-| Loss | Reconstruction only | Reconstruction + KL divergence |
-| Latent structure | Irregular, gaps | Smooth, continuous |
-
----
-
-## Applications of Autoencoders & Generative Models
-
-### Semi-supervised classification
-
-When labeled data is scarce but unlabeled data is abundant:
-
-- Pretrain an autoencoder (or DBN) on all the data — labeled and unlabeled
-- The encoder learns useful feature representations without needing labels
-- Attach a classifier head to the encoder and fine-tune on the small labeled set
-- The pretrained features give the classifier a massive head start
-
-This works because the autoencoder learns the underlying data structure, which is useful regardless of the specific classification task.
-
-### Noise reduction (denoising)
-
-Denoising autoencoders are trained on corrupted inputs but target clean outputs. Once trained:
-
-- Feed a noisy image through the encoder and decoder
-- The network strips away noise while preserving signal
-- Works for image denoising, audio cleanup, and even filling in missing data
-
-The key insight is that the model learns the **manifold of clean data** — noise pushes data off this manifold, and the autoencoder projects it back.
-
-### Nonlinear dimensionality reduction
-
-- PCA gives you the best linear subspace — but real data often lives on curved manifolds
-- Autoencoders with nonlinear activations can learn these curved structures
-- The latent space of an autoencoder is a nonlinear embedding of the data
-- Useful for visualization (reduce to 2D/3D), feature extraction, and data compression
-
-Example: reducing a 784-dimensional MNIST image to 2 latent dimensions — similar digits cluster together in the latent space, even though no labels were used during training.
-
----
-
-## Goal-Oriented Decision Making — Reinforcement Learning Basics
-
-Reinforcement learning (RL) is fundamentally different from supervised learning. Instead of learning from labeled examples, an **agent** learns by interacting with an **environment** and receiving **rewards**.
-
-### Core concepts
-
-- **Agent** — the learner/decision-maker
-- **Environment** — everything the agent interacts with
-- **State** ($s$) — current situation the agent is in
-- **Action** ($a$) — what the agent can do
-- **Reward** ($r$) — feedback signal after taking an action
-- **Policy** ($\pi$) — the agent's strategy: mapping from states to actions
-- **Episode** — one complete run from start to terminal state
-
-The goal: find a policy $\pi$ that maximizes the **cumulative discounted reward**:
-
-$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
-
-The discount factor $\gamma \in [0, 1)$ controls how much the agent cares about future vs. immediate rewards. $\gamma = 0$ makes the agent greedy (only cares about next reward), $\gamma \to 1$ makes it far-sighted.
-
-### Exploration vs. exploitation
-
-The classic RL dilemma:
-- **Exploit** — do what you currently think is best
-- **Explore** — try something new, might discover something better
-
-Too much exploitation → stuck in suboptimal behavior. Too much exploration → never capitalizes on what it's learned. Every RL algorithm needs to balance these.
-
----
-
-## Policy and Target Networks
-
-When you combine RL with deep neural networks (Deep RL), training becomes unstable. The issue: the network is trying to hit a moving target — the Q-values it's chasing keep changing as the network updates.
-
-### Why two networks?
-
-- **Policy network** (online network) — the one being actively trained, used to select actions
-- **Target network** — a frozen copy of the policy network, used to compute target Q-values
-
-The target network is updated slowly (either periodically copied from the policy network, or via **soft updates**):
-
-$$\theta_{\text{target}} \leftarrow \tau \theta_{\text{policy}} + (1 - \tau) \theta_{\text{target}}$$
-
-where $\tau$ is small (e.g., 0.005). This keeps the target stable enough for learning to converge.
-
-Without the target network, you'd be adjusting your predictions based on predictions from the same rapidly-changing network — like trying to shoot at a moving target that moves every time you aim. The separate target network holds still long enough for you to learn.
-
----
-
-## Deep Q-Network (DQN)
-
-DQN (Mnih et al., 2015) was the first deep RL method to achieve human-level performance on Atari games. It combines Q-learning with deep neural networks and two critical stabilization tricks.
-
-### Q-learning recap
-
-The **Q-function** $Q(s, a)$ estimates the expected cumulative reward of taking action $a$ in state $s$ and then following the optimal policy. The Bellman equation gives us the update rule:
-
-$$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right]$$
-
-In plain English: adjust your current estimate toward the reward you got plus the best you can do from the next state.
-
-With a small discrete state space you can store Q-values in a table. But for complex environments (images, continuous states), you need a neural network to approximate $Q(s, a; \theta)$ — that's DQN.
-
-### Experience replay
-
-Instead of training on experiences in order (which are highly correlated), DQN stores transitions $(s, a, r, s')$ in a **replay buffer** and samples random mini-batches for training.
-
-Why this matters:
-- Breaks temporal correlations between consecutive samples
-- Each experience can be reused multiple times (data efficient)
-- Smooths out the training distribution
-
-Without replay, the network overfits to whatever it's currently experiencing and forgets earlier lessons.
-
-### Epsilon-greedy exploration
-
-DQN uses a simple but effective exploration strategy:
-
-- With probability $\epsilon$, choose a **random** action (explore)
-- With probability $1 - \epsilon$, choose the action with highest Q-value (exploit)
-- Start with high $\epsilon$ (e.g., 1.0) and **decay** it over training (e.g., down to 0.01)
-
-Early on, the agent explores wildly. As it learns, it increasingly trusts its own Q-value estimates.
-
-### Putting it all together
+### Contrastive Divergence (CD-k) Training
+Calculating the exact partition function $Z$ requires summing over millions of state combinations (intractable). RBMs use **Contrastive Divergence (CD-1)**:
 
 ```
-Initialize replay buffer D
-Initialize policy network Q with random weights θ
-Initialize target network Q̂ with weights θ⁻ = θ
+1. Positive Phase : Clamp real data onto Visible (v0)  ---> Sample Hidden (h0)
+2. Negative Phase : Reconstruct Visible from h0 (v1)    ---> Sample Hidden (h1)
+3. Weight Update  : Weight_new = Weight_old + rate * ( (v0 * h0) - (v1 * h1) )
+```
+*Intuition: Show the model real data, let it "dream" for 1 step, and adjust weights so reality is more probable than its dream.*
 
-For each episode:
-    Observe initial state s
-    For each step:
-        Select action a (epsilon-greedy from Q)
-        Execute a, observe reward r and next state s'
-        Store (s, a, r, s') in D
-        Sample random mini-batch from D
-        Compute target: y = r + γ max_a' Q̂(s', a'; θ⁻)
-        Update θ by minimizing (y - Q(s, a; θ))²
-        Every C steps: θ⁻ ← θ
+---
+
+## 3. Deep Belief Networks (DBN)
+
+A **Deep Belief Network (DBN)** is created by stacking multiple RBMs on top of each other.
+
+```
++------------------------------------+
+|            RBM Layer 3             |
++------------------------------------+
+                  ^  (Hidden becomes Visible for next layer)
++------------------------------------+
+|            RBM Layer 2             |
++------------------------------------+
+                  ^
++------------------------------------+
+|            RBM Layer 1             |
++------------------------------------+
+                  ^
+          Raw Input Data (v)
+```
+
+### Greedy Layer-Wise Pretraining
+1. Train RBM 1 on raw data until convergence.
+2. Freeze RBM 1; pass its hidden outputs as visible inputs to train RBM 2.
+3. Repeat layer by layer (**Greedy Unsupervised Pretraining**).
+4. Add a final classification layer and fine-tune the entire stack with standard Backpropagation.
+
+---
+
+## 4. Autoencoders
+
+An **Autoencoder** is a neural network trained to copy its input to its output through a narrow **Bottleneck (Latent Space)**.
+
+```
+Input X (784 dims) ---> [ ENCODER ] ---> Latent Space Z (32 dims) ---> [ DECODER ] ---> Output X_hat (784 dims)
+                                              ^
+                                      (Bottleneck Code)
+```
+
+- **Encoder Equation:** $z = f(W_e x + b_e)$
+- **Decoder Equation:** $\hat{x} = g(W_d z + b_d)$
+- **Reconstruction Loss (MSE):** $\mathcal{L} = \|x - \hat{x}\|^2$
+
+---
+
+### Types of Autoencoders
+
+| Autoencoder Type | Key Mechanism | Best Purpose |
+|:---|:---|:---|
+| **Undercomplete** | Latent dimension $k \ll n$ (smaller than input) | Data Compression / Dimensionality Reduction |
+| **Sparse** | Adds L1 penalty to activations (forces most hidden nodes to 0) | Feature Extraction |
+| **Denoising** | Adds random noise to input, forces model to reconstruct clean output | Image Denoising / Robust feature learning |
+| **Contractive** | Adds penalty on Jacobian matrix derivatives | Makes representations resilient to small input shifts |
+
+---
+
+### Autoencoders vs. PCA (Nonlinear Manifolds)
+- **PCA (Principal Component Analysis):** Can only project data onto a **flat linear plane**.
+- **Autoencoders:** With non-linear activations (ReLU/Sigmoid), autoencoders can learn **curved nonlinear manifolds** (e.g., Swiss roll data).
+
+---
+
+## 5. Variational Autoencoders (VAE)
+
+### Why Regular Autoencoders Fail at Generation
+A regular autoencoder maps each input image to a discrete single point in latent space. If you sample a random point from empty gaps in latent space, the decoder outputs garbage!
+
+### Probabilistic Latent Space ($\mu$ and $\sigma$)
+Instead of mapping an input to a single point vector $z$, a VAE encoder outputs **two vectors**:
+1. Mean vector ($\mu$)
+2. Variance vector ($\sigma^2$)
+
+```
+Input X ---> [ ENCODER ] ---> Mean (μ)   ----\
+                        ---> Log-Var (σ²) ----+---> Sample z ~ N(μ, σ²) ---> [ DECODER ] ---> Reconstructed X
 ```
 
 ---
 
-## Generative Adversarial Networks (GANs)
+### The Reparameterization Trick
 
-GANs (Goodfellow et al., 2014) train two networks against each other in a game — one generates fake data, the other tries to tell real from fake. Through this competition, the generator learns to produce increasingly realistic outputs.
+Sampling $z$ directly from $\mathcal{N}(\mu, \sigma^2)$ is a random operation. **You CANNOT calculate gradients through a random node during Backprop!**
 
-### The two players
+**The Solution:** Move randomness to an independent noise variable $\epsilon \sim \mathcal{N}(0, 1)$:
 
-- **Generator** $G(z)$ — takes random noise $z \sim \mathcal{N}(0, 1)$ and produces fake data
-- **Discriminator** $D(x)$ — takes data (real or fake) and outputs probability that it's real
+$$z = \mu + \sigma \odot \epsilon$$
 
-### The minimax game
-
-The training objective:
-
-$$\min_G \max_D \; \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$$
-
-Breaking this down:
-- The discriminator wants to maximize — correctly classify real as real ($D(x) \to 1$) and fake as fake ($D(G(z)) \to 0$)
-- The generator wants to minimize — fool the discriminator ($D(G(z)) \to 1$)
-
-### Training dynamics
-
-Training alternates between updating D and G:
-
-1. **Train D**: show it real samples and fake samples from G, update D to distinguish them better
-2. **Train G**: generate fake samples, pass through D, update G to make D's output closer to 1 (i.e., fool D)
-
-The equilibrium (in theory): G produces data indistinguishable from real data, and D outputs 0.5 for everything (can't tell the difference).
-
-In practice, training GANs is notoriously finicky — more on that below.
-
----
-
-## Generator and Discriminator Architectures
-
-### DCGAN (Deep Convolutional GAN)
-
-DCGAN (Radford et al., 2016) established architectural guidelines that made GAN training more stable:
-
-- **Generator**: uses transposed convolutions (upsampling) to go from noise vector → image
-- **Discriminator**: uses strided convolutions (downsampling) to go from image → real/fake probability
-- **Key rules**:
-  - Replace pooling layers with strided convolutions (discriminator) and transposed convolutions (generator)
-  - Use batch normalization in both networks (except output layer of G, input layer of D)
-  - Use ReLU in generator (except output: tanh), LeakyReLU in discriminator
-  - No fully connected layers (except for input/output)
-
-### Conditional GAN (cGAN)
-
-Regular GANs generate random outputs — you can't control *what* they produce. Conditional GANs fix this by feeding a **condition** (e.g., class label, text description) to both the generator and discriminator:
-
-- Generator: $G(z, c)$ — noise + condition → output
-- Discriminator: $D(x, c)$ — data + condition → real/fake
-
-Example: give the generator the label "7" and it produces images of the digit 7.
-
-### Mode collapse
-
-The most common GAN failure mode. The generator finds a few outputs that fool the discriminator and keeps producing only those — ignoring the diversity of the real data.
-
-Signs of mode collapse:
-- Generator always produces similar-looking outputs
-- Low variety across generated samples
-- Discriminator loss oscillates but doesn't improve
-
-Mitigation strategies:
-- **Minibatch discrimination** — let D see batches of samples, not just individual ones
-- **Unrolled GANs** — G anticipates future D updates
-- **Wasserstein GAN (WGAN)** — uses Wasserstein distance instead of JS divergence, provides more stable gradients
-- **Spectral normalization** — constrains D's Lipschitz constant
-
-| GAN Variant | Key Feature | Best For |
-|-------------|------------|----------|
-| DCGAN | Convolutional architecture | Image generation |
-| cGAN | Conditioned on labels/attributes | Controlled generation |
-| WGAN | Wasserstein distance loss | Stable training |
-| CycleGAN | Unpaired image translation | Style transfer |
-| StyleGAN | Style-based generator | High-res face synthesis |
-
----
-
-## Challenges in Neural Network Training
-
-### Vanishing and exploding gradients
-
-In deep networks, gradients are multiplied through many layers during backpropagation. If the weights are slightly less than 1, gradients shrink exponentially (vanish). If slightly greater than 1, they grow exponentially (explode).
-
-- **Vanishing gradients** — early layers barely learn because their gradients are near zero. Common with sigmoid/tanh activations.
-- **Exploding gradients** — weights swing wildly, loss becomes NaN. Can happen with poor initialization.
-
-Solutions:
-- **ReLU activation** — gradients are either 0 or 1, no multiplicative shrinking
-- **Proper initialization** — Xavier init for tanh, He init for ReLU: $w \sim \mathcal{N}(0, \sqrt{2/n_{\text{in}}})$
-- **Residual connections** — skip connections let gradients flow directly through (ResNet)
-- **Gradient clipping** — cap gradient magnitude to prevent explosions
-
-### Batch normalization
-
-Normalizes the inputs to each layer so they have zero mean and unit variance, then applies learnable scale ($\gamma$) and shift ($\beta$):
-
-$$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \qquad y_i = \gamma \hat{x}_i + \beta$$
-
-Why it helps:
-- Reduces internal covariate shift — each layer sees more stable inputs
-- Allows higher learning rates
-- Acts as mild regularization (because batch statistics add noise)
-- Makes the network less sensitive to initialization
-
-At test time, use running averages of mean/variance computed during training (not batch statistics).
-
-### Dropout
-
-Randomly sets a fraction of neurons to zero during each training step. This forces the network to not rely on any single neuron and learn more robust, distributed representations.
-
-- Training: each neuron is dropped with probability $p$ (commonly $p = 0.5$ for hidden, $p = 0.2$ for input)
-- The remaining activations are scaled by $\frac{1}{1-p}$ to maintain expected values (inverted dropout)
-- Test time: all neurons are active, no scaling needed
-
-Dropout is effectively training an ensemble of exponentially many sub-networks that share weights.
-
-### Regularization summary
-
-| Technique | How it works | When to use |
-|-----------|-------------|-------------|
-| L2 (weight decay) | Penalizes large weights: $\lambda \sum w^2$ | Default regularizer |
-| L1 | Penalizes weight magnitude: $\lambda \sum |w|$ | When you want sparse weights |
-| Dropout | Randomly drops neurons | Large fully-connected layers |
-| Batch norm | Normalizes layer inputs | Almost always (CNNs especially) |
-| Early stopping | Stop when val loss stops improving | Always monitor this |
-| Data augmentation | Increase effective training set | When data is limited |
-
----
-
-## Data Augmentation
-
-When you don't have enough training data, you can artificially expand your dataset by applying transformations that preserve the label. The model sees each training example in many variations, which reduces overfitting.
-
-### Geometric transforms
-
-- **Horizontal flip** — works for most natural images (not text or directional data)
-- **Random crop** — forces the model to recognize objects at different positions
-- **Rotation** — small angles (±15°) for most tasks, full 360° for aerial/medical images
-- **Scaling/zoom** — randomly resize to handle scale variation
-- **Shear/affine** — slight perspective distortion
-
-### Color and intensity
-
-- **Color jitter** — randomly adjust brightness, contrast, saturation
-- **Random grayscale** — occasionally convert to grayscale
-- **Normalization** — per-channel mean/std normalization (not augmentation per se, but essential)
-
-### Advanced techniques
-
-- **Mixup** — blend two training images and their labels: $\tilde{x} = \lambda x_1 + (1-\lambda) x_2$, same for labels. Encourages linear behavior between training examples.
-- **Cutout** — randomly mask a square patch of the input with zeros. Forces the model to use context, not just key features.
-- **CutMix** — replace a patch of one image with a patch from another, blend labels proportionally. Combines benefits of Cutout and Mixup.
-- **RandAugment** — randomly select from a pool of augmentations with uniform magnitude. Simple, effective, fewer hyperparameters.
-
-The right augmentation strategy depends on the domain — what transformations preserve meaning? Flipping a cat is fine; flipping a "6" makes it a "9".
-
----
-
-## Hyperparameter Settings (in context of Deep Learning)
-
-Unit I covered hyperparameter basics. Here we focus on the advanced considerations that arise when training deep networks at scale.
-
-### Key hyperparameters for deep networks
-
-| Hyperparameter | Typical Range | How to tune |
-|---------------|--------------|-------------|
-| Learning rate | 1e-4 to 1e-1 | Most important — use LR finder (sweep LR over one epoch, pick steepest descent region) |
-| Batch size | 16–512 | Larger = faster training, but may generalize worse. Scale LR proportionally (linear scaling rule) |
-| Weight decay (L2) | 1e-5 to 1e-2 | Regularization strength — higher = simpler model |
-| Dropout rate | 0.1–0.5 | Higher for larger networks or less data |
-| Number of layers/units | Architecture-dependent | Start small, increase until dev error stops improving |
-| Optimizer params ($\beta_1$, $\beta_2$) | 0.9, 0.999 (Adam defaults) | Rarely need to change from defaults |
-
-### Learning rate scheduling
-
-A fixed learning rate is rarely optimal throughout training:
-
-- **Step decay** — reduce LR by factor (e.g., ×0.1) every N epochs. Simple and effective.
-- **Cosine annealing** — smoothly decay LR following a cosine curve. Used in most modern training recipes.
-- **Warm-up + decay** — start with tiny LR, ramp up linearly for a few epochs, then decay. Essential for large batch training and Transformers.
-- **Reduce on plateau** — monitor dev loss; if it stops improving for N epochs, reduce LR. Good for fine-tuning.
-
-$$\alpha = \frac{1}{1 + \text{decay\_rate} \times \text{epoch}} \cdot \alpha_0$$
-
-### Practical strategies
-
-- **Random search > grid search** — Bergstra & Bengio (2012) showed that random sampling covers the important dimensions better because hyperparameters vary in importance.
-- **Sample on log scale** — learning rate and regularization should be sampled uniformly in log space (e.g., $10^{-4}$ to $10^{-1}$), not linearly.
-- **Coarse-to-fine** — first do a broad sweep to find the right region, then narrow down with more trials in that region.
-- **Bayesian optimization** — model the performance surface with a Gaussian process, then intelligently pick the next hyperparameter to try. Available in AWS SageMaker, Optuna, Weights & Biases.
-
-### Weight initialization revisited
-
-- **Xavier/Glorot** — $W \sim \mathcal{N}(0, 1/n_{\text{in}})$ — preserves variance for sigmoid/tanh
-- **He/Kaiming** — $W \sim \mathcal{N}(0, 2/n_{\text{in}})$ — accounts for ReLU zeroing half the outputs
-
-Wrong initialization → vanishing or exploding activations from the very first forward pass. Always match initialization to your activation function.
-
----
-
-## Transfer Learning (in context of Deep Learning)
-
-Unit II introduced transfer learning for CNNs. Here we cover the broader principle and its application across domains.
-
-### The core idea
-
-Instead of training a model from scratch, start with a model pretrained on a large dataset and adapt it to your (often smaller) task. This works because early layers learn general features (edges, textures, basic patterns) that transfer across tasks.
-
-### Transfer learning strategies
-
-| Strategy | When to use | What to do |
-|----------|-------------|------------|
-| **Feature extraction** | Small dataset, similar domain | Freeze all pretrained layers, train only the final classifier |
-| **Fine-tuning (last layers)** | Moderate dataset | Freeze early layers, fine-tune later layers + classifier |
-| **Full fine-tuning** | Large dataset, different domain | Initialize with pretrained weights, train everything with small LR |
-| **Domain adaptation** | Target domain distribution differs | Use techniques like adversarial alignment to bridge the gap |
-
-### Practical guidelines
-
-- **Freeze early, unfreeze late** — early layers capture universal features (edges, frequencies), later layers capture task-specific ones. Fine-tune from the top down.
-- **Use a smaller learning rate** — pretrained weights are already good; large updates would destroy them. Typical: 10x–100x smaller than training from scratch.
-- **Discriminative learning rates** — use even smaller LR for early layers, larger for later layers (fastai popularized this).
-- **Data size matters**:
-  - Very small (< 1000 samples): feature extraction only, don't fine-tune
-  - Medium (1k–10k): fine-tune last few layers
-  - Large (10k+): fine-tune everything
-
-### Transfer learning across domains
-
-| Source → Target | Examples | What transfers |
-|----------------|----------|---------------|
-| ImageNet → Medical imaging | Pretrained ResNet → X-ray classification | Edge/texture detectors |
-| ImageNet → Satellite imagery | Pretrained CNN → land use classification | Spatial feature extractors |
-| Large text corpus → Specific NLP | BERT → sentiment analysis | Language understanding |
-| English NLP → Other languages | mBERT → cross-lingual tasks | Multilingual representations |
-| Simulation → Real world | Simulated robot → Physical robot (sim-to-real) | Control policies |
-
-### Connection to other Unit III topics
-
-- **Autoencoders** — pretrained encoder weights can be transferred as feature extractors
-- **GANs** — pretrained discriminators can serve as feature extractors; pretrained generators can be fine-tuned for new domains
-- **DQN** — pretrained CNN feature extractors (from ImageNet) are often used as the visual backbone in deep RL
-
----
-
-## Deploying ML Models with PyTorch and TensorFlow
-
-Training a model is only half the job — getting it into production reliably is the other half.
-
-### Model export formats
-
-- **PyTorch** → TorchScript (scripted or traced) or ONNX
-- **TensorFlow** → SavedModel or TFLite (for mobile/edge)
-- **ONNX** (Open Neural Network Exchange) — framework-agnostic format that lets you train in PyTorch and deploy with TensorRT, ONNX Runtime, etc.
-
-```python
-# PyTorch → ONNX export
-import torch
-dummy_input = torch.randn(1, 3, 224, 224)
-torch.onnx.export(model, dummy_input, "model.onnx",
-                  input_names=["image"], output_names=["prediction"])
-
-# PyTorch → TorchScript
-scripted = torch.jit.script(model)
-scripted.save("model.pt")
+```
+WITHOUT TRICK (Broken Backprop):         WITH REPARAMETERIZATION TRICK (Works!):
+  μ ----\                                  μ -----------\
+         ---> [ Random Sample ] ---> z                   ---> [ z = μ + σ * ε ] ---> z
+  σ ----/       (GRADIENT BLOCKED!)        σ ---- (x) --/
+                                                   ^
+                                 ε ~ N(0,1) -------+
 ```
 
-```python
-# TensorFlow → SavedModel
-model.save("saved_model_dir")
+---
 
-# TensorFlow → TFLite
-converter = tf.lite.TFLiteConverter.from_saved_model("saved_model_dir")
-tflite_model = converter.convert()
-```
-
-### Serving frameworks
-
-- **TorchServe** — official PyTorch model server. Package model into a `.mar` archive, deploy with REST/gRPC endpoints. Handles batching, versioning, metrics.
-- **TensorFlow Serving** — similar for TF models, serves SavedModel format via REST/gRPC.
-- **Triton Inference Server** (NVIDIA) — supports PyTorch, TF, ONNX, TensorRT. Good for GPU-heavy deployments.
-
-### Optimization for deployment
-
-| Technique | What it does | Speedup |
-|-----------|-------------|---------|
-| Quantization | Reduce weights from FP32 → INT8 | 2-4x faster, smaller model |
-| Pruning | Remove near-zero weights | Smaller, sometimes faster |
-| Knowledge distillation | Train small "student" from large "teacher" | Much smaller model |
-| Operator fusion | Combine sequential ops into one kernel | Reduced overhead |
-| Dynamic batching | Group incoming requests | Better GPU utilization |
-
-### Practical deployment checklist
-
-- Export and test the model in the target format — verify outputs match training framework
-- Profile inference latency and memory footprint
-- Set up input validation — reject malformed requests before they hit the model
-- Implement model versioning — roll back if a new model degrades quality
-- Monitor in production — track latency, error rates, prediction distributions
-- Consider A/B testing before fully switching to a new model version
+### VAE Loss Function
+$$\mathcal{L}_{\text{VAE}} = \underbrace{\|x - \hat{x}\|^2}_{\text{Reconstruction Loss (Looks like original)}} + \underbrace{D_{\text{KL}}\left( \mathcal{N}(\mu, \sigma^2) \,||\, \mathcal{N}(0, 1) \right)}_{\text{KL Divergence (Keeps latent space smooth & continuous)}}$$
 
 ---
 
-*End of Unit III — Advanced Deep Learning*
+## 6. Reinforcement Learning & Deep Q-Networks (DQN)
+
+In **Reinforcement Learning (RL)**, an **Agent** learns to make decisions by taking **Actions** in an **Environment** to maximize cumulative **Rewards**.
+
+```
+                      +-------------------+
+                      |    ENVIRONMENT    |
+                      +-------------------+
+                        /               \
+       State (s_t) & Reward (r_t)     Action (a_t)
+                      /                   \
+                     v                     |
+              +---------------+            |
+              |     AGENT     | -----------+
+              +---------------+
+```
+
+---
+
+### Key Terms & Definitions
+- **State ($s$):** The current scenario (e.g., screen pixels in a video game).
+- **Action ($a$):** The choice made by the agent (e.g., Move Left, Jump, Move Right).
+- **Reward ($r$):** Scalar feedback signal (+10 for scoring, -100 for dying).
+- **Policy ($\pi$):** The strategy mapping states to actions.
+- **Discount Factor ($\gamma \in [0, 1)$):** Determines how much the agent values future rewards vs. immediate rewards.
+
+---
+
+### Q-Learning & The Bellman Equation
+The **Q-Value** $Q(s, a)$ measures the expected future return of taking action $a$ in state $s$:
+
+$$Q(s, a) = r + \gamma \max_{a'} Q(s', a')$$
+
+---
+
+### DQN Innovations: Experience Replay & Target Networks
+
+Standard Q-learning with neural networks is unstable. **DQN** introduced two major fixes:
+
+1. **Experience Replay Buffer:**
+   - Store past experiences $(s, a, r, s')$ in a memory buffer.
+   - Train on random mini-batches sampled from the buffer.
+   - **Benefit:** Breaks temporal correlations between consecutive video frames.
+
+2. **Separate Target Network:**
+   - Use a second frozen network $Q_{\text{target}}$ to compute target values ($r + \gamma \max Q_{\text{target}}$).
+   - Periodically update $Q_{\text{target}}$ weights every $C$ steps.
+   - **Benefit:** Stops the target from constantly shifting during updates.
+
+---
+
+## 7. Generative Adversarial Networks (GANs)
+
+Invented by Ian Goodfellow in 2014, **GANs** train two networks simultaneously in a competitive zero-sum game.
+
+### The Counterfeiter vs. Police Game
+- **Generator ($G$):** The Counterfeiter. Takes random noise vector $z$ and creates fake images trying to fool the discriminator.
+- **Discriminator ($D$):** The Police. Examines real images and fake images and outputs probability $D(x) \in [0, 1]$ ($1 = \text{Real}, 0 = \text{Fake}$).
+
+```
+Random Noise (z) ---> [ GENERATOR (G) ] ---> Fake Image \
+                                                         +---> [ DISCRIMINATOR (D) ] ---> Real or Fake?
+Real Training Dataset ---------------------> Real Image /
+```
+
+---
+
+### Minimax Objective Function
+$$\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$$
+
+- **Discriminator wants to MAXIMIZE:** $D(x) \rightarrow 1$ (Real=Real) and $D(G(z)) \rightarrow 0$ (Fake=Fake).
+- **Generator wants to MINIMIZE:** Make $D(G(z)) \rightarrow 1$ (Fool Discriminator into calling Fake=Real).
+
+---
+
+### Architectures: DCGAN & Conditional GAN (cGAN)
+
+- **DCGAN (Deep Convolutional GAN):** Replaces dense layers with Transposed Convolutions in $G$ and Strided Convolutions in $D$.
+- **Conditional GAN (cGAN):** Feeds class labels $y$ into BOTH $G$ and $D$ so you can control output (e.g., *"Generate a cat"* vs *"Generate a dog"*).
+
+---
+
+### Mode Collapse & Stability Tricks
+- **Mode Collapse:** A major GAN failure where $G$ produces only ONE single plausible output over and over (e.g., only generating digit 1s).
+- **Fixes:** Use **Wasserstein GAN (WGAN)** loss, Spectral Normalization, or Minibatch Discrimination.
+
+---
+
+## 8. Training Challenges & Solutions
+
+### A. Vanishing & Exploding Gradients
+- **Vanishing Gradients:** Gradients shrink near 0; early layers stop learning. (*Fix: Use ReLU, ResNet skip connections, He initialization*).
+- **Exploding Gradients:** Gradients become huge numbers; model output becomes `NaN`. (*Fix: Gradient Clipping*).
+
+---
+
+### B. Batch Normalization Deep-Dive
+Batch Norm normalizes activations across a mini-batch:
+
+$$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$$
+
+- $\gamma$ (scale) and $\beta$ (shift) are learnable parameters.
+- **Benefits:** Prevents internal covariate shift, allows $10\times$ higher learning rates, acts as regularizer.
+
+---
+
+### C. Dropout & Regularization Techniques
+
+```
+    WITHOUT DROPOUT                        WITH DROPOUT (p = 0.5)
+  (o)---(o)---(o)                        (o)   (x)   (o)
+   | \ / | \ / |                          |     |     |       (50% of neurons randomly deactivated
+  (o)---(o)---(o)                        (x)   (o)   (x)       during training pass!)
+   | \ / | \ / |                          |     |     |
+  (o)---(o)---(o)                        (o)   (x)   (o)
+```
+
+- **Inverted Dropout:** Scales remaining active neurons by $\frac{1}{1-p}$ during training so no scaling is needed at test time.
+
+---
+
+### D. Data Augmentation Strategies
+
+```
+Original Image        Horizontal Flip         Random Crop          CutMix Blend
+  +---------+           +---------+           +---------+           +---------+
+  |  (Cat)  |   ===>    |  (taC)  |   ===>    |  (Ca)   |   ===>    | (Cat+Dog|
+  +---------+           +---------+           +---------+           +---------+
+```
+- **Mixup:** Blends two images linearly: $\tilde{x} = \lambda x_1 + (1-\lambda) x_2$.
+- **CutMix:** Pastes a patch of Image B onto Image A.
+
+---
+
+## 9. Advanced Hyperparameter Tuning & Transfer Learning
+
+### Learning Rate Schedules
+
+```
+     Cosine Annealing Decay                        Warmup + Decay
+  LR ^                                         LR ^     / \
+     | \                                          |    /   \
+     |   \                                        |   /     \
+     |     ~__                                    |  /       \___
+     +--------------> Epochs                      +--------------> Epochs
+```
+
+- **Warmup:** Slowly ramps up learning rate for first few epochs to protect pretrained weights from sudden shock.
+
+---
+
+## 10. Deploying Deep Learning Models
+
+### Model Exports
+
+```
+PyTorch (.pt)  -----> ONNX Export (.onnx) -----> TensorRT / TorchScript (Fast Inference)
+TensorFlow     -----> SavedModel          -----> TFLite (Mobile / Edge devices)
+```
+
+---
+
+### Model Optimization Techniques
+
+```
+1. QUANTIZATION  : Converts 32-bit Floating Point (FP32) weights --> 8-bit Integers (INT8).
+                   Result: 4x smaller memory size, 3x faster speed!
+
+2. PRUNING       : Removes near-zero weight connections entirely.
+                   Result: Sparse matrices, faster execution.
+
+3. DISTILLATION  : Trains a small "Student Model" to copy the probability predictions of a massive "Teacher Model".
+```
+
+---
+
+### Production Deployment Checklist
+1. ☐ **Export to ONNX / TorchScript / TFLite**.
+2. ☐ **Quantize to INT8 / FP16**.
+3. ☐ **Profile Inference Latency** (Ensure <50ms response time).
+4. ☐ **Set up Serving Framework** (TorchServe, Triton Server, TF Serving).
+5. ☐ **Monitor Data Drift & Output Anomalies in Production**.
+
+---
+
+## 11. Unit III Cheat Sheet & Quick Reference
+
+| Model / Concept | Main Equation / Objective | Primary Application |
+|:---|:---|:---|
+| **RBM** | $E(v,h) = -a^Tv - b^Th - v^TWh$ | Feature extraction, Collaborative filtering |
+| **Autoencoder** | $\min \|x - \text{Decoder}(\text{Encoder}(x))\|^2$ | Non-linear dimensionality reduction, Denoising |
+| **VAE** | $\text{Reconstruction Loss} + D_{\text{KL}}(\mathcal{N}(\mu,\sigma^2) \| \mathcal{N}(0,1))$ | Smooth generative latent spaces, Interpolation |
+| **DQN** | $Q(s,a) \leftarrow r + \gamma \max_{a'} Q_{\text{target}}(s', a')$ | Deep Reinforcement Learning (Atari, Robotics) |
+| **GAN** | $\min_G \max_D \mathbb{E}[\log D(x)] + \mathbb{E}[\log(1-D(G(z)))]$ | Photorealistic image synthesis, Style transfer |
+| **Quantization** | $\text{FP32} \rightarrow \text{INT8}$ | Ultra-fast edge model deployment |
