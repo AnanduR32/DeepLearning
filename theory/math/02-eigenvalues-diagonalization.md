@@ -75,8 +75,8 @@ Find the eigenvalues and eigenvectors of $A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \en
    $$(\lambda - 5)(\lambda - 2) = 0 \implies \lambda_1 = 5, \quad \lambda_2 = 2$$
 
    *Check Trace and Determinant:*
-   - $\text{tr}(A) = 4 + 3 = 7 = 5 + 2$ $\checkmark$
-   - $\det(A) = (4)(3) - (1)(2) = 10 = (5)(2)$ $\checkmark$
+   - $\text{tr}(A) = 4 + 3 = 7 = 5 + 2$ ✓
+   - $\det(A) = (4)(3) - (1)(2) = 10 = (5)(2)$ ✓
 
 2. **Eigenvector for $\lambda_1 = 5$:**
    $$(A - 5I)v = 0 \implies \begin{pmatrix} -1 & 1 \\ 2 & -2 \end{pmatrix} \begin{pmatrix} v_1 \\ v_2 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix} \implies -v_1 + v_2 = 0 \implies v_1 = v_2$$
@@ -154,7 +154,7 @@ Using $A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$ from Section 1 with $\l
    $$A^k = P D^k P^{-1} = \begin{pmatrix} 1 & 1 \\ 1 & -2 \end{pmatrix} \begin{pmatrix} 5^k & 0 \\ 0 & 2^k \end{pmatrix} \left( \frac{1}{3} \begin{pmatrix} 2 & 1 \\ 1 & -1 \end{pmatrix} \right)$$
    $$A^k = \frac{1}{3} \begin{pmatrix} 5^k & 2^k \\ 5^k & -2 \cdot 2^k \end{pmatrix} \begin{pmatrix} 2 & 1 \\ 1 & -1 \end{pmatrix} = \frac{1}{3} \begin{pmatrix} 2 \cdot 5^k + 2^k & 5^k - 2^k \\ 2 \cdot 5^k - 2 \cdot 2^k & 5^k + 2 \cdot 2^k \end{pmatrix}$$
 
-   For $k=1$: $A^1 = \frac{1}{3}\begin{pmatrix} 10+2 & 5-2 \\ 10-4 & 5+4 \end{pmatrix} = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$ $\checkmark$.
+   For $k=1$: $A^1 = \frac{1}{3}\begin{pmatrix} 10+2 & 5-2 \\ 10-4 & 5+4 \end{pmatrix} = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$ ✓.
 
 ---
 
@@ -595,6 +595,6 @@ $$\begin{aligned}
 | **PCA** | $C = \frac{1}{N-1}X_c^T X_c = Q \Lambda Q^T$ | Finds axes of maximum variance for dimensionality reduction |
 | **Jacobi Iteration** | $x^{(k+1)} = D^{-1}(b - (L+U)x^{(k)})$ | Parallelizable sparse solver; requires diagonal dominance |
 | **Gauss–Seidel Iteration** | $x^{(k+1)} = (D+L)^{-1}(b - Ux^{(k)})$ | In-place iterative solver; faster convergence |
-| **Power Method** | $x^{(k+1)} = \frac{A x^{(k)}}{\|A x^{(k)}\|_2}$ | Finds dominant eigenvalue $\lambda_1$ and eigenvector |
+| **Power Method** | $x^{(k+1)} = \frac{A x^{(k)}}{\Vert A x^{(k)} \Vert_2}$ | Finds dominant eigenvalue $\lambda_1$ and eigenvector |
 | **Leslie Demography Model** | $x^{(k+1)} = L x^{(k)}, \; \lambda_1 > 1 \implies \text{growth}$ | Age-structured population dynamics and stable age profile |
 | **Linear Programming (LPP)** | $\max c^T x \text{ s.t. } Ax \le b, x \ge 0$ | Optimization on convex polytopes; optimum at vertex |

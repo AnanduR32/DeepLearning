@@ -194,7 +194,7 @@ Let $A = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix}$.
    $$A^{-1} = \frac{1}{\det(A)} \text{adj}(A) = \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix}$$
 
 4. **Sanity Check Multiplication:**
-   $$A A^{-1} = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix} \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix} = \begin{pmatrix} -11+0+12 & 2+0-2 & 2+0-2 \\ -22+4+18 & 4+0-3 & 4-1-3 \\ -44-4+48 & 8+0-8 & 8+1-8 \end{pmatrix} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} \quad \checkmark$$
+   $$A A^{-1} = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix} \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix} = \begin{pmatrix} -11+0+12 & 2+0-2 & 2+0-2 \\ -22+4+18 & 4+0-3 & 4-1-3 \\ -44-4+48 & 8+0-8 & 8+1-8 \end{pmatrix} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}$$ ✓
 
 ---
 
@@ -702,7 +702,7 @@ $$\det(A) = \det(U) = (1)(1)(2)(4) = \mathbf{8}$$
 
 **Step-by-step Solution:**
 Row reduce $[A]$:
-$$\begin{pmatrix} 1 & 3 & 3 & 2 \\ 2 & 6 & 9 & 7 \\ -1 & -3 & 3 & 4 \end{pmatrix} \xrightarrow{\substack{R_2-2R_1 \\ R_3+R_1}} \begin{pmatrix} 1 & 3 & 3 & 2 \\ 0 & 0 & 3 & 3 \\ 0 & 0 & 6 & 6 \end{pmatrix} \xrightarrow{R_3-2R_2} \begin{pmatrix} 1 & 3 & 3 & 2 \\ 0 & 0 & 3 & 3 \\ 0 & 0 & 0 & 0 \end{pmatrix} \xrightarrow{R_1-R_2,\; R_2/3} \begin{pmatrix} 1 & 3 & 0 & -1 \\ 0 & 0 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{pmatrix}$$
+$$\begin{pmatrix} 1 & 3 & 3 & 2 \\ 2 & 6 & 9 & 7 \\ -1 & -3 & 3 & 4 \end{pmatrix} \xrightarrow[R_3+R_1]{R_2-2R_1} \begin{pmatrix} 1 & 3 & 3 & 2 \\ 0 & 0 & 3 & 3 \\ 0 & 0 & 6 & 6 \end{pmatrix} \xrightarrow{R_3-2R_2} \begin{pmatrix} 1 & 3 & 3 & 2 \\ 0 & 0 & 3 & 3 \\ 0 & 0 & 0 & 0 \end{pmatrix} \xrightarrow{R_1-R_2,\; R_2/3} \begin{pmatrix} 1 & 3 & 0 & -1 \\ 0 & 0 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{pmatrix}$$
 - $\text{rank}(A) = 2$.
 1. **$C(A)$:** Pivot columns of original $A$ are columns 1 and 3:
    $$\text{Basis}(C(A)) = \left\{ \begin{pmatrix} 1 \\ 2 \\ -1 \end{pmatrix}, \begin{pmatrix} 3 \\ 9 \\ 3 \end{pmatrix} \right\}, \quad \dim(C(A)) = 2$$
@@ -747,5 +747,5 @@ Let $a_1 = (1, 1, 0)^T$ and $a_2 = (1, 0, 1)^T$.
 | **Fundamental Subspaces** | $N(A) = C(A^T)^\perp, \; N(A^T) = C(A)^\perp$ | Complete geometric decomposition of $\mathbb{R}^n, \mathbb{R}^m$ |
 | **LU Decomposition** | $A = LU \implies Ly=b, \; Ux=y$ | Solves linear systems in $O(n^2)$ after $O(n^3)$ factoring |
 | **Projection Matrix** | $P = A(A^T A)^{-1} A^T$ | Projects onto $C(A)$; $P^2=P, \; P^T=P$ |
-| **Normal Equations** | $A^T A \hat{x} = A^T b$ | Finds unique least-squares fit minimizing $\|Ax-b\|_2^2$ |
+| **Normal Equations** | $A^T A \hat{x} = A^T b$ | Finds unique least-squares fit minimizing $\Vert Ax-b \Vert_2^2$ |
 | **QR Decomposition** | $A = QR \implies R\hat{x} = Q^T b$ | Numerically stable least squares; condition number preserved |

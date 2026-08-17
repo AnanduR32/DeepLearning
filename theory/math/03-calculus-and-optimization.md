@@ -467,7 +467,7 @@ $$\langle f, g \rangle = \int_a^b f(x) g(x) dx$$
 
 | Mathematical Concept | Defining Formula / Key Theorem | Applied Relevance in AI / Engineering |
 |---|---|---|
-| **Limit ($\epsilon$-$\delta$)** | $\forall \epsilon>0, \exists \delta>0: 0<\|x-c\|<\delta \implies \|f(x)-L\|<\epsilon$ | Rigorous asymptotic convergence analysis |
+| **Limit ($\epsilon$-$\delta$)** | $\forall \epsilon > 0, \; \exists \delta > 0 : 0 < \vert x - c \vert < \delta \implies \vert f(x) - L \vert < \epsilon$ | Rigorous asymptotic convergence analysis |
 | **Derivative** | $f'(x) = \lim_{h\to 0} \frac{f(x+h)-f(x)}{h}$ | Instantaneous sensitivity / slope of loss surface |
 | **Chain Rule** | $\frac{dh}{dx} = \frac{dh}{du}\frac{du}{dx}$ | Neural network backpropagation & Automatic Diff |
 | **Mean Value Theorem** | $f'(c) = \frac{f(b)-f(a)}{b-a}$ | Error bounds in numerical approximation & Taylor series |
