@@ -217,6 +217,11 @@ $$\log p(x) \ge \text{ELBO}(\theta, \phi; x) = \underbrace{\mathbb{E}_{z \sim q_
 ---
 
 ### 5.3 The Reparameterization Trick
+
+> [!TIP]
+> **Physical Metaphor — The External Dice-Roller:**
+> Backpropagation cannot compute derivatives through a random dice roll ($z \sim \mathcal{N}(\mu, \sigma^2)$). The Reparameterization Trick isolates the random dice throw in an external room ($\epsilon \sim \mathcal{N}(0, I)$) and feeds the pure numeric result into an adjustable volume and offset dial ($z = \mu + \sigma \odot \epsilon$). Because the dials ($\mu, \sigma$) are deterministic, calculus flows through them smoothly.
+
 Backpropagation cannot compute gradients through stochastic sampling $z \sim \mathcal{N}(\mu, \sigma^2)$.
 The **Reparameterization Trick** factors the stochasticity out into an independent standard normal noise variable $\epsilon \sim \mathcal{N}(0, I)$:
 
@@ -241,6 +246,10 @@ $$D_{\text{KL}}\left(\mathcal{N}(\mu, \sigma^2) \,\|\, \mathcal{N}(0, I)\right) 
 ---
 
 ## 6. Deep Reinforcement Learning & Deep Q-Networks (DQN)
+
+> [!TIP]
+> **Physical Metaphor — The Mouse in the Maze and the Frozen Scoreboard:**
+> An RL agent is a mouse navigating a maze seeking cheese ($+1$) while avoiding mousetraps ($-1$). If the target Q-value changes on every single step, the mouse chases a moving goalpost. The **Target Network** freezes the scorekeeper's goalposts in place for 1,000 steps, allowing the mouse's neural network to stabilize before updating the scoreboard.
 
 In **Reinforcement Learning (RL)**, an agent interacts with an environment modeled as a **Markov Decision Process (MDP)**: $(S, A, P, R, \gamma)$.
 
@@ -285,6 +294,12 @@ $$\mathcal{L}(\theta) = \mathbb{E}_{(s, a, r, s') \sim \mathcal{D}} \left[ \left
 ---
 
 ## 7. Generative Adversarial Networks (GANs)
+
+> [!TIP]
+> **Physical Metaphor — The Art Forger vs. The Art Detective:**
+> - **Generator ($G$):** An amateur counterfeiter attempting to forge Rembrandt paintings.
+> - **Discriminator ($D$):** A museum detective trying to tell real Rembrandts from fakes.
+> - As the detective catches subtle mistakes, the forger learns brushstroke nuances. Eventually, the forger produces paintings indistinguishable from authentic masterworks ($D(G(z)) \to 0.5$).
 
 Invented by Ian Goodfellow et al. (2014), a GAN sets up a zero-sum game between two competing neural networks:
 - **Generator $G(z; \theta_g)$:** Maps random noise $z \sim p_z$ to synthetic data $G(z)$.
@@ -351,7 +366,7 @@ Gradient ^
         C ^                          C ^                         C ^                          C ^
           | [X][X][X]                  | [X][ ][ ]                 | [X][ ][ ]                  | [X][ ][ ] Group 1
           | [X][X][X]                  | [X][ ][ ]                 | [ ][ ][ ]                  | [X][ ][ ] Group 1
-          | [X][X][X]                  | [X][ ][ ]                 | [ ][ ][ ]                  | [ ][ ][ ] Group 2
+          | [X][X][X]                  | [X][ ][ ]                 | [ ][ ][ ]                  | [X][ ][ ] Group 2
           +----------> N               +----------> N              +----------> N               +----------> N
        (Vision standard)           (Transformers / NLP)          (Style Transfer)             (Small Batch Vision)
 ```
@@ -391,12 +406,16 @@ graph LR
 ### 9.1 Model Optimization Techniques:
 
 1. **Quantization (FP32 $\to$ INT8):**
+   > [!TIP]
+   > **Physical Metaphor — Digital Color Palette Compression:**
+   > FP32 is a 24-bit TrueColor palette with 16.7 million distinct hues. Quantization maps all pixels down to an 8-bit retro arcade palette of 256 colors ($S, Z$). Memory size drops $4\times$, while visual accuracy remains virtually indistinguishable.
+
    Maps 32-bit floating point weights to 8-bit integers via scale factor $S$ and zero-point $Z$:
    $$q = \text{round}\left( \frac{x}{S} \right) + Z$$
-   - Reduces memory size by **$4\times$**.
-   - Accelerates inference by **$2\times - 4\times$** on modern hardware (Tensor Cores / Neural Engines).
-   - **Post-Training Quantization (PTQ):** Quantizes without retraining using calibration data.
-   - **Quantization-Aware Training (QAT):** Models rounding errors during training with fake-quantization operators.
+   - Reduces memory footprint by **$4\times$** ($32\text{ bits} \to 8\text{ bits}$).
+   - Accelerates inference by **$2\times - 4\times$** on modern integer hardware (Tensor Cores / Neural Engines).
+   - **Post-Training Quantization (PTQ):** Quantizes without retraining using small calibration batches.
+   - **Quantization-Aware Training (QAT):** Models rounding clamp errors during training via fake-quantization nodes.
 
 2. **Network Pruning:**
    Removes redundant weights whose absolute magnitude $|w_{ij}| < \tau$.

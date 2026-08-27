@@ -98,6 +98,10 @@ graph LR
 
 The **Perceptron**, introduced by Frank Rosenblatt in 1958, is the foundational building block of neural computing. It models a single biological neuron receiving $n$ inputs $x = (x_1, x_2, \dots, x_n)^T \in \mathbb{R}^n$, weighting them by $w = (w_1, w_2, \dots, w_n)^T \in \mathbb{R}^n$, adding a scalar bias $b \in \mathbb{R}$, and passing the pre-activation sum through a threshold step function:
 
+> [!TIP]
+> **Physical Metaphor — The Mechanical Balance Scale:**
+> Think of a Perceptron as a mechanical balance scale. Each input feature $x_i$ is a coin placed in a tray, multiplied by its metal density (weight $w_i$). The bias $b$ is a counterweight on the opposite side. If the total torque exceeds the counterweight ($z \ge 0$), the scale abruptly tips and rings an electric bell ($\hat{y} = 1$).
+
 $$z = w^T x + b = \sum_{i=1}^n w_i x_i + b$$
 
 $$\hat{y} = f(z) = \begin{cases} 1 & \text{if } z \ge 0 \\ 0 & \text{if } z < 0 \end{cases}$$
@@ -129,9 +133,10 @@ $$b \leftarrow b + \eta \, (y^{(i)} - \hat{y}^{(i)})$$
 
 Where $\eta \in (0, 1]$ is the learning rate.
 
-#### Novikoff's Perceptron Convergence Theorem
-If the training data is **linearly separable** with geometric margin $\gamma = \min_i \frac{y^{(i)} (w^{*T} x^{(i)} + b^*)}{\|w^*\|_2} > 0$ and bounded radius $R = \max_i \|x^{(i)}\|_2$, the perceptron learning rule is guaranteed to find a separating hyperplane in at most:
-$$k \le \left( \frac{R}{\gamma} \right)^2 \text{ mistake updates}$$
+#### Novikoff's Perceptron Convergence Theorem (1962)
+Assume the training dataset is **linearly separable** under bipolar labels $y^{(i)} \in \{-1, +1\}$ by an optimal unit hyperparameter vector $w^*$ with margin $\gamma = \min_i y^{(i)}(w^{*T} x^{(i)} + b^*) > 0$, bounded by maximum sample radius $R = \max_i \|x^{(i)}\|_2$. The Perceptron algorithm makes at most $k$ mistake updates before separating all points perfectly:
+
+$$\boxed{k \le \left( \frac{R}{\gamma} \right)^2 \text{ mistake updates}}$$
 
 > [!CAUTION]
 > **Fatal Flaw of the Perceptron:** If the dataset is **not linearly separable**, the perceptron learning algorithm will cycle infinitely and never converge!
@@ -290,6 +295,10 @@ Training a neural network means finding parameter values $\theta = \{W^{[l]}, b^
 $$W^{[l]} \leftarrow W^{[l]} - \eta \frac{\partial J}{\partial W^{[l]}}, \qquad b^{[l]} \leftarrow b^{[l]} - \eta \frac{\partial J}{\partial b^{[l]}}$$
 
 **Backpropagation** is an efficient application of the multivariate **Chain Rule of Calculus** to compute these partial derivatives recursively from the output layer backwards to the input layer.
+
+> [!TIP]
+> **Physical Metaphor — The Acoustic Echo Chamber:**
+> Imagine a sequence of connected acoustic rooms. In the forward pass, you speak at the entrance ($x$), and each room alters the sound pitch ($W^{[l]}a^{[l-1]} + b^{[l]}$) until a final note plays at the exit. If the note is off-pitch (Loss $J$), you shout an error correction back into the exit. The sound waves echo in reverse; each doorway's acoustic microphone measures exactly how much its own wall angle contributed to the final off-pitch sound.
 
 ```
 FORWARD PASS  : Compute activations from left to right:   x ---> a^[1] ---> a^[2] ---> ... ---> a^[L] ---> Loss J
@@ -504,17 +513,25 @@ graph TD
 
 #### Detailed Optimizer Formulations:
 
+> [!TIP]
+> **Physical Metaphors — The Evolution of Optimizers:**
+> - **Vanilla SGD (Ping-Pong Ball):** Extremely lightweight; easily bounced sideways by tiny bumps in the terrain.
+> - **Momentum (Heavy Iron Bowling Ball):** Accumulates velocity along the main descent slope, effortlessly smashing through shallow local potholes and damping cross-axis oscillations.
+> - **RMSProp (Adaptive Hydraulic Shock Absorber):** Automatically stiffens resistance on axes with violent bumpy oscillations while remaining compliant along smooth flat highways.
+> - **Adam (High-End Sports Car):** Combines a heavy flywheel (Momentum) with automatic active suspension (RMSProp) and an initial cold-start accelerator (Bias Correction).
+
 1. **SGD with Momentum:**
    $$v_t = \beta v_{t-1} + (1 - \beta) g_t \qquad (\beta \approx 0.9)$$
    $$\theta_{t+1} = \theta_t - \eta v_t$$
+   *(Alternative PyTorch Formulation: $v_t = \beta v_{t-1} + g_t$ with $\theta_{t+1} = \theta_t - \eta v_t$).*
 
 2. **RMSProp (Root Mean Square Propagation):**
    $$s_t = \beta_2 s_{t-1} + (1 - \beta_2) g_t^2 \qquad (\beta_2 \approx 0.999)$$
    $$\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{s_t + \epsilon}} \odot g_t$$
 
 3. **Adam (Adaptive Moment Estimation):**
-   - 1st Moment (Mean velocity): $m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t$ ($\beta_1 = 0.9$)
-   - 2nd Moment (Variance): $v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2$ ($\beta_2 = 0.999$)
+   - 1st Moment (Mean velocity / Momentum): $m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t$ ($\beta_1 = 0.9$)
+   - 2nd Moment (Uncentered variance / RMSProp): $v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2$ ($\beta_2 = 0.999$)
    - **Bias Corrections:** Since $m_0 = 0, v_0 = 0$, early estimates are biased toward zero:
      $$\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \qquad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}$$
    - **Parameter Update:**
@@ -668,6 +685,11 @@ $$z_j^{[1]} = 0 \implies a_j^{[1]} = g(0)$$
 During backpropagation, $\frac{\partial \mathcal{L}}{\partial w_{ji}^{[1]}}$ is identical for all neurons $j$. Every hidden neuron updates identically, collapsing the multi-layer network into a single neuron!
 
 #### Modern Variance Scaling Solutions:
+
+> [!TIP]
+> **Physical Metaphor — Tuning Audio Amplifier Daisy Chains:**
+> Imagine connecting 50 audio amplifiers in series. If each amplifier multiplies the sound volume by $1.2\times$, the final speaker will explode in deafening distortion (exploding activations). If each multiplies by $0.8\times$, the sound fades to inaudible silence (vanishing activations). Weight initialization calibrates the exact electrical resistance ($\text{Var}(W)$) so sound power remains constant at exactly $1.0\times$ across all 50 rooms.
+
 To keep activation and gradient variances stable across all $L$ layers:
 
 1. **Xavier (Glorot) Initialization** (For **Tanh** and **Sigmoid**):
@@ -675,11 +697,15 @@ To keep activation and gradient variances stable across all $L$ layers:
 
 2. **He (Kaiming) Initialization** (For **ReLU** and **Leaky ReLU**):
    Since ReLU zeroes out half the distribution ($\mathbb{E}[\text{ReLU}(z)^2] = \frac{1}{2}\text{Var}(z)$), the initialization variance must be doubled:
-   $$W^{[l]} \sim \mathcal{N}\left(0, \; \sigma^2 = \frac{2}{n_{\text{in}}}\right)$$
+   $$W^{[l]} \sim \mathcal{N}\left(0, \; \sigma^2 = \frac{2}{n_{\text{in}}}\right) \quad \text{or} \quad \mathcal{U}\left(-\sqrt{\frac{6}{n_{\text{in}}}}, \; +\sqrt{\frac{6}{n_{\text{in}}}}\right)$$
 
 ---
 
 ### 9.2 Batch Normalization: Formulation & Inference
+
+> [!TIP]
+> **Physical Metaphor — The Standardized HVAC Airlock:**
+> Imagine a hotel where each floor changes the air temperature erratically. Batch Normalization is an airlock chamber at the entrance of each floor that instantly resets air temperature to $0^\circ\text{C}$ and pressure variance to $1.0$, before the learnable climate dial ($\gamma, \beta$) adjusts it to the optimal comfort setting for that specific floor.
 
 For a mini-batch $\mathcal{B} = \{z^{(1)}, \dots, z^{(m)}\}$ of hidden layer pre-activations:
 
@@ -689,10 +715,11 @@ For a mini-batch $\mathcal{B} = \{z^{(1)}, \dots, z^{(m)}\}$ of hidden layer pre
 4. **Scale & Shift (Learnable parameters $\gamma, \beta$):**
    $$\tilde{z}^{(i)} = \gamma \hat{z}^{(i)} + \beta$$
 
-#### Inference Mode Caveat:
-During test/inference time, single samples are evaluated ($m=1$), so batch mean/variance cannot be computed. Instead, Batch Norm uses exponential moving averages of mean and variance accumulated during training:
-$$\mu_{\text{running}} = \alpha \mu_{\text{running}} + (1 - \alpha) \mu_{\mathcal{B}}$$
-$$\sigma^2_{\text{running}} = \alpha \sigma^2_{\text{running}} + (1 - \alpha) \sigma^2_{\mathcal{B}}$$
+#### Inference Mode Mechanics:
+During test/inference time, single samples are evaluated ($m=1$), so batch mean/variance cannot be computed directly. Instead, Batch Norm uses exponential running moving averages tracked during training:
+$$\mu_{\text{running}} = (1 - \text{momentum}) \cdot \mu_{\text{running}} + \text{momentum} \cdot \mu_{\mathcal{B}}$$
+$$\sigma^2_{\text{running}} = (1 - \text{momentum}) \cdot \sigma^2_{\text{running}} + \text{momentum} \cdot \sigma^2_{\mathcal{B}}$$
+*(Where default PyTorch $\text{momentum} = 0.1$, corresponding to classical decay factor $\alpha = 0.9$).*
 
 ---
 

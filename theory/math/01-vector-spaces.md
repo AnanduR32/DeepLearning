@@ -194,7 +194,7 @@ Let $A = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix}$.
    $$A^{-1} = \frac{1}{\det(A)} \text{adj}(A) = \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix}$$
 
 4. **Sanity Check Multiplication:**
-   $$A A^{-1} = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix} \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix} = \begin{pmatrix} -11+0+12 & 2+0-2 & 2+0-2 \\ -22+4+18 & 4+0-3 & 4-1-3 \\ -44-4+48 & 8+0-8 & 8+1-8 \end{pmatrix} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}$$ ✓
+   $$A A^{-1} = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix} \begin{pmatrix} -11 & 2 & 2 \\ -4 & 0 & 1 \\ 6 & -1 & -1 \end{pmatrix}=\begin{pmatrix} -11+0+12 & 2+0-2 & 2+0-2 \\ -22+4+18 & 4+0-3 & 4-1-3 \\ -44-4+48 & 8+0-8 & 8+1-8 \end{pmatrix}=\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}$$
 
 ---
 
@@ -205,7 +205,7 @@ Let $A = \begin{pmatrix} 1 & 0 & 2 \\ 2 & -1 & 3 \\ 4 & 1 & 8 \end{pmatrix}$.
 A vector $x \in \mathbb{R}^n$ represents both a point in $n$-dimensional space and a directed line segment from the origin.
 
 #### Vector $p$-Norms
-A norm $\|\cdot\|: \mathbb{R}^n \to \mathbb{R}_{\ge 0}$ assigns a non-negative length to every vector, satisfying:
+A norm $\|x\|: \mathbb{R}^n \to \mathbb{R}_{\ge 0}$ assigns a non-negative length to every vector, satisfying:
 1. **Positivity:** $\|x\| \ge 0$, and $\|x\| = 0 \iff x = 0$.
 2. **Homogeneity:** $\|\alpha x\| = |\alpha| \|x\|$ for all $\alpha \in \mathbb{R}$.
 3. **Triangle Inequality:** $\|x + y\| \le \|x\| + \|y\|$.
